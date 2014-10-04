@@ -13,7 +13,9 @@
       </ItemGroup>
       
       <CallTarget Targets="MergeXMLDocs" />
-      
+  -->
+  
+  <!--  
       The MergeXMLDocsTask can also use item metadata called 'XMLDoc' as input file name, if it is present.
       For example, in order to create MergeXMLDocs_Fragments item group for all .il files that should also have their XML documentation in corresponding .xml file, use this:
       
@@ -22,7 +24,9 @@
           <XMLDoc>%(IL.RootDir)%(IL.Directory)%(IL.Filename).xml</XMLDoc>
         </MergeXMLDocs>
       </ItemGroup>
-      
+  -->
+  
+  <!-- 
       The main XML documentation file may be overridden (if it is something else than DocumentationFile property):
       <PropertyGroup>
         <MergeXMLDocs_MainXML>Path/To/Main/XMLDoc.xml</MergeXMLDocs_MainXML>

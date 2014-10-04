@@ -39,27 +39,27 @@
     <releaseNotes>$(NuSpec_ReleaseNotes)</releaseNotes>
     <tags>$(NuSpec_Tags)</tags>
     <summary>$(NuSpec_Summary)</summary>]]></NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_Language)' != '' ">
+      <NuSpec_XMLContent Condition=" '$(NuSpec_Language)' != '' ">$(NuSpec_XMLContent)
     &lt;language&gt;$(NuSpec_Language)&lt;/language&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_ProjectURL)' != '' ">
+      <NuSpec_XMLContent Condition=" '$(NuSpec_ProjectURL)' != '' ">$(NuSpec_XMLContent)
     &lt;projectUrl&gt;$(NuSpec_ProjectURL)&lt;/projectUrl&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_IconURL)' != '' ">
+      <NuSpec_XMLContent Condition=" '$(NuSpec_IconURL)' != '' ">$(NuSpec_XMLContent)
     &lt;iconUrl&gt;$(NuSpec_IconURL)&lt;/iconUrl&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_LicenseURL)' != '' ">
+      <NuSpec_XMLContent Condition=" '$(NuSpec_LicenseURL)' != '' ">$(NuSpec_XMLContent)
     &lt;licenseUrl&gt;$(NuSpec_LicenseURL)&lt;/licenseUrl&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_Copyright)' != '' ">
+      <NuSpec_XMLContent Condition=" '$(NuSpec_Copyright)' != '' ">$(NuSpec_XMLContent)
     &lt;copyright&gt;$(NuSpec_Copyright)&lt;/copyright&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_RequireLicenseAcceptance)' != '' ">
+      <NuSpec_XMLContent Condition=" '$(NuSpec_RequireLicenseAcceptance)' != '' ">$(NuSpec_XMLContent)
     &lt;requireLicenseAcceptance&gt;$(NuSpec_RequireLicenseAcceptance)&lt;/requireLicenseAcceptance&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_DevelopmentDependency)' != '' ">
+      <NuSpec_XMLContent Condition=" '$(NuSpec_DevelopmentDependency)' != '' ">$(NuSpec_XMLContent)
     &lt;developmentDependency&gt;$(NuSpec_DevelopmentDependency)&lt;/developmentDependency&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_ReferencesXML)' != '' ">
+      <NuSpec_XMLContent Condition=" '$(NuSpec_ReferencesXML)' != '' ">$(NuSpec_XMLContent)
     &lt;references&gt;$(NuSpec_ReferencesXML)&lt;/references&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_DependenciesXML)' != '' ">
+      <NuSpec_XMLContent Condition=" '$(NuSpec_DependenciesXML)' != '' ">$(NuSpec_XMLContent)
     &lt;dependencies&gt;$(NuSpec_DependenciesXML)&lt;/dependencies&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_FrameworkAssembliesXML)' != '' ">
+      <NuSpec_XMLContent Condition=" '$(NuSpec_FrameworkAssembliesXML)' != '' ">$(NuSpec_XMLContent)
     &lt;frameworkAssemblies&gt;$(NuSpec_FrameworkAssembliesXML)&lt;/frameworkAssemblies&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent><![CDATA[
+      <NuSpec_XMLContent><![CDATA[$(NuSpec_XMLContent)
   </metadata>
   <files>
     $(NuSpec_FilesXML)

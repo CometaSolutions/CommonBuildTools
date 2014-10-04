@@ -65,7 +65,7 @@
     $(NuSpec_FilesXML)
   </files>
 </package>
-      ]]</NuSpec_XMLContent>
+      ]]></NuSpec_XMLContent>
     </PropertyGroup>
     
     <!-- Check for directory existence (WriteLinesToFile task fails if directory doesn't exist...) -->

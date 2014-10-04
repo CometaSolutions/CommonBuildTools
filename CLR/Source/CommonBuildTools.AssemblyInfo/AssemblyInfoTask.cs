@@ -131,7 +131,7 @@ namespace CommonBuildTools
             }
 
             // Check that we won't refresh the information for nothing. This will cause long builds
-            if ( !File.Exists( path ) || !File.ReadAllText( path ).Trim().Equals( generatedString, StringComparison.CurrentCultureIgnoreCase ) )
+            if ( !File.Exists( path ) || !File.ReadAllText( path ).Trim().Equals( generatedString, StringComparison.CurrentCulture ) )
             {
                this.Log.LogMessage( MessageImportance.High, "Generating assembly info path to {0}.", path );
                File.WriteAllText( path, generatedString );

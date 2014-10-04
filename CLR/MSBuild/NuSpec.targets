@@ -37,23 +37,35 @@
     <owners>$(NuSpec_Owners)</owners>
     <description>$(NuSpec_Description)</description>
     <releaseNotes>$(NuSpec_ReleaseNotes)</releaseNotes>
-    <summary>$(NuSpec_Summary)</summary>
-    <language>$(NuSpec_Language)</language>
-    <projectUrl>$(NuSpec_ProjectURL)</projectUrl>
-    <iconUrl>$(NuSpec_IconURL)</iconUrl>
-    <licenseUrl>$(NuSpec_LicenseURL)</licenseUrl>
-    <copyright>$(NuSpec_Copyright)</copyright>
-    <requireLicenseAcceptance>$(NuSpec_RequireLicenseAcceptance)</requireLicenseAcceptance>
     <tags>$(NuSpec_Tags)</tags>
-    <developmentDependency>$(NuSpec_DevelopmentDependency)</developmentDependency>
-    <references>$(NuSpec_ReferencesXML)</references>
-    <dependencies>$(NuSpec_DependenciesXML)</dependencies>
-    <frameworkAssemblies>$(NuSpec_FrameworkAssembliesXML)</frameworkAssemblies>
+    <summary>$(NuSpec_Summary)</summary>]]></NuSpec_XMLContent>
+      <NuSpec_XMLContent Condition=" '$(NuSpec_Language)' != '' ">
+    &lt;language&gt;$(NuSpec_Language)&lt;/language&gt;</NuSpec_XMLContent>
+      <NuSpec_XMLContent Condition=" '$(NuSpec_ProjectURL)' != '' ">
+    &lt;projectUrl&gt;$(NuSpec_ProjectURL)&lt;/projectUrl&gt;</NuSpec_XMLContent>
+      <NuSpec_XMLContent Condition=" '$(NuSpec_IconURL)' != '' ">
+    &lt;iconUrl&gt;$(NuSpec_IconURL)&lt;/iconUrl&gt;</NuSpec_XMLContent>
+      <NuSpec_XMLContent Condition=" '$(NuSpec_LicenseURL)' != '' ">
+    &lt;licenseUrl&gt;$(NuSpec_LicenseURL)&lt;/licenseUrl&gt;</NuSpec_XMLContent>
+      <NuSpec_XMLContent Condition=" '$(NuSpec_Copyright)' != '' ">
+    &lt;copyright&gt;$(NuSpec_Copyright)&lt;/copyright&gt;</NuSpec_XMLContent>
+      <NuSpec_XMLContent Condition=" '$(NuSpec_RequireLicenseAcceptance)' != '' ">
+    &lt;requireLicenseAcceptance&gt;$(NuSpec_RequireLicenseAcceptance)&lt;/requireLicenseAcceptance&gt;</NuSpec_XMLContent>
+      <NuSpec_XMLContent Condition=" '$(NuSpec_DevelopmentDependency)' != '' ">
+    &lt;developmentDependency&gt;$(NuSpec_DevelopmentDependency)&lt;/developmentDependency&gt;</NuSpec_XMLContent>
+      <NuSpec_XMLContent Condition=" '$(NuSpec_ReferencesXML)' != '' ">
+    &lt;references&gt;$(NuSpec_ReferencesXML)&lt;/references&gt;</NuSpec_XMLContent>
+      <NuSpec_XMLContent Condition=" '$(NuSpec_DependenciesXML)' != '' ">
+    &lt;dependencies&gt;$(NuSpec_DependenciesXML)&lt;/dependencies&gt;</NuSpec_XMLContent>
+      <NuSpec_XMLContent Condition=" '$(NuSpec_FrameworkAssembliesXML)' != '' ">
+    &lt;frameworkAssemblies&gt;$(NuSpec_FrameworkAssembliesXML)&lt;/frameworkAssemblies&gt;</NuSpec_XMLContent>
+      <NuSpec_XMLContent><![CDATA[
   </metadata>
   <files>
     $(NuSpec_FilesXML)
   </files>
-</package>]]></NuSpec_XMLContent>
+</package>
+      ]]</NuSpec_XMLContent>
     </PropertyGroup>
     
     <!-- Check for directory existence (WriteLinesToFile task fails if directory doesn't exist...) -->

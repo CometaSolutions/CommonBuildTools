@@ -1,0 +1,9 @@
+# Ignore executable files
+*.dll
+*.exe
+
+# Ignore VS solution option files
+*.suo
+
+# Ignore intermediate folder
+obj

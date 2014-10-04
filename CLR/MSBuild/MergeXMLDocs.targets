@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- This .targets file exposes MergeXMLDocs target and MergeXMLDocsTask task.
+       The target will take care of preparing variables and calling MergeXMLDocsTask task.
+       The purpose of the target is to merge multiple XML doc fragments into main XML doc file.
+       This situation arises when e.g. one has IL code within C#/VB.NET project.
+  -->
+  
+  <!-- Example. Assumes that DocumentationFile property is set.
+      
+      <ItemGroup>
+        <MergeXMLDocs_Fragments Include="*.xml" />
+      </ItemGroup>
+      
+      <CallTarget Targets="MergeXMLDocs" />
+      
+      The MergeXMLDocsTask can also use item metadata called 'XMLDoc' as input file name, if it is present.
+      For example, in order to create MergeXMLDocs_Fragments item group for all .il files that should also have their XML documentation in corresponding .xml file, use this:
+      
+      <ItemGroup>
+        <MergeXMLDocs_Fragments Include="*.il">
+          <XMLDoc>%(IL.RootDir)%(IL.Directory)%(IL.Filename).xml</XMLDoc>
+        </MergeXMLDocs>
+      </ItemGroup>
+      
+      The main XML documentation file may be overridden (if it is something else than DocumentationFile property):
+      <PropertyGroup>
+        <MergeXMLDocs_MainXML>Path/To/Main/XMLDoc.xml</MergeXMLDocs_MainXML>
+      </PropertyGroup>
+  
+  -->
+  
+  <UsingTask TaskName="MergeXMLDocsTask"
+      TaskFactory="CodeTaskFactory"
+      AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <MainXMLDoc ParameterType="System.String" />
+      <XMLDocFragments ParameterType="Microsoft.Build.Framework.ITaskItem[]" />
+    </ParameterGroup>
+    <Task>
+	  <Reference Include="System.Xml" />
+	  <Reference Include="System.Xml.Linq" />
+      <Using Namespace="System.Xml.Linq" />
+      <Using Namespace="System.Xml.XPath" />
+      <Code Type="Fragment"
+            Language="cs"><![CDATA[
+         // Save main xml filename
+         var mainXmlFN = this.MainXMLDoc;
+
+         // Read main XML document
+         if ( !File.Exists( mainXmlFN ) )
+         {
+           this.Log.LogError( "The main documentation file {0} does not exist.", mainXmlFN );
+           return false;
+         }
+         
+         var mainXml = XDocument.Load( mainXmlFN );
+
+         // Get the members node
+         var membersXml = mainXml.XPathSelectElement( "/doc/members" );
+
+         // Iterate through xml doc fragments
+         foreach ( var fragment in this.XMLDocFragments )
+         {
+            // Get fragment file name from metadata, or if it doesn't exist, use full name
+            var fragmentFN = fragment.GetMetadata( "XMLDoc" ) ?? fragment.GetMetadata( "FullPath" );
+			// Skip the file if it doesn't exist
+			if (File.Exists(fragmentFN))
+			{
+              // Append the children of <members> element to <members> node of main xml
+			  var elems = XElement.Load( fragmentFN ).XPathSelectElements( "members/*" );
+			  if (elems.Any())
+			  {
+                membersXml.Add( elems );
+                this.Log.LogMessage( Microsoft.Build.Framework.MessageImportance.High, "Merged XML doc fragment from {0}.", fragmentFN );
+		      } else
+              {
+                this.Log.LogWarning( "The XML fragment file {0} does not seem to contain any documentation.", fragmentFN );
+              }
+			} else
+			{
+			  this.Log.LogWarning( "The XML document fragment file {0} does not exist.", fragmentFN );
+			}
+         }
+
+         // Write result to main XML document
+         mainXml.Save( mainXmlFN );
+      ]]></Code>
+    </Task>
+  </UsingTask>
+  
+  <Target Name="MergeXMLDocs">
+    <!-- Main documentation file -->
+    <PropertyGroup>
+      <MergeXMLDocs_MainXML Condition=" '$(MergeXMLDocs_MainXML)' == '' ">$(DocumentationFile)</MergeXMLDocs_MainXML>
+    </PropertyGroup>
+       
+    <!-- Execute task, if needed -->
+    <Message Condition=" '$(MergeXMLDocs_MainXML)' == '' " Importance="High" Text="Skipping XML doc merging since no documentation file was defined." />
+    <MergeXMLDocsTask
+      Condition=" '$(MergeXMLDocs_MainXML)' != '' "
+      MainXMLDoc="$(MergeXMLDocs_MainXML)"
+      XMLDocFragments="@(MergeXMLDocs_Fragments)"
+    />
+  </Target>
+</Project>

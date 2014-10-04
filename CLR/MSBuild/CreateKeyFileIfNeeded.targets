@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- This .targets file exposes GenerateKeyFile target, which will create new .snk file if it doesn't exist, to ensure smooth build -->
+  
+  <Target Name="GenerateKeyFile" Condition="!Exists('$(KeyFilePath)')">
+    <!-- Create directory if needed -->
+    <CreateItem Include="$(KeyFilePath)">
+      <Output ItemName="KeyFilePathMeta" TaskParameter="Include"/>
+    </CreateItem>
+    <CreateProperty Value="%(KeyFilePathMeta.RootDir)%(KeyFilePathMeta.Directory)">
+      <Output PropertyName="KeyFileDir" TaskParameter="Value"/>
+    </CreateProperty>
+    <MakeDir
+      Condition="!Exists('$(KeyFileDir)')"
+      Directories="$(KeyFileDir)" />
+    
+    <!-- Deduce location of sn.exe on Windows machines -->
+    <GetFrameworkSdkPath Condition=" '$(OS)' != 'Unix' ">
+      <Output TaskParameter="Path" PropertyName="WinSDKPath" />
+    </GetFrameworkSdkPath>
+    <ItemGroup Condition=" '$(OS)' != 'Unix' ">
+      <MatchingSNFile Include="$(WinSDKPath)\bin\*\sn.exe" />
+    </ItemGroup>
+	  <PropertyGroup Condition=" '$(OS)' != 'Unix' ">
+	    <MatchingSNFileProperty Condition="'$(TargetFrameworkSDKToolsDirectory)' != ''">$(TargetFrameworkSDKToolsDirectory)sn.exe</MatchingSNFileProperty>
+	    <MatchingSNFileProperty Condition="'$(MatchingSNFileProperty)' == ''">$(WinSDKPath)\bin\NETFX 4.0 Tools\sn.exe</MatchingSNFileProperty>
+	    <MatchingSNFileProperty Condition="!Exists('$(MatchingSNFileProperty)')">%(MatchingSNFile.Identity)</MatchingSNFileProperty>
+	  </PropertyGroup>
+    <PropertyGroup Condition=" '$(OS)' == 'Unix' ">
+      <MatchingSNFileProperty>sn</MatchingSNFileProperty>
+    </PropertyGroup>
+    
+    <!-- Check that sn.exe was found successfully -->
+    <Error Condition=" '$(OS)' != 'Unix' and !Exists('$(MatchingSNFileProperty)')" Text="Failed to find signing tool! (sn.exe) (Deduced to $(MatchingSNFileProperty))." />
+    
+    <!-- Create sn.exe file -->
+    <Exec Command="&quot;$(MatchingSNFileProperty)&quot; -k &quot;$(KeyFilePath)&quot;" />
+    
+  </Target>
+</Project>

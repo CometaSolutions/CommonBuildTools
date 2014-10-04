@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- This .targets file exposes GenerateNuSpecFile target, which will generate a .nuspec file according to the properties (NuSpec_{Property}) -->
+  
+  <Target Name="GenerateNuSpecFile">
+    <!-- Read version information from file, if needed -->
+	<ReadLinesFromFile Condition="'$(NuSpec_VersionFilename)' != ''" File="$(NuSpec_VersionFilename)">
+      <Output TaskParameter="Lines"
+        ItemName="NuSpec_VersionItem" />
+    </ReadLinesFromFile>
+    <PropertyGroup Condition="'$(NuSpec_VersionFilename)' != ''">
+	    <NuSpec_Version>%(NuSpec_VersionItem.Identity)</NuSpec_Version>
+	</PropertyGroup>
+    
+    <!-- Setup copyright text, if specified -->
+    <PropertyGroup Condition=" '$(NuSpec_Copyright)' == '' and '$(NuSpec_AutoCopyright)' != '' and '$(NuSpec_CopyrightInceptionYear)' != ''">
+      <NuSpec_CopyrightCurrentYear>$([System.DateTime]::Now.Year)</NuSpec_CopyrightCurrentYear>
+      <NuSpec_Copyright>Copyright $(NuSpec_CopyrightInceptionYear)-$(NuSpec_CopyrightCurrentYear), $(NuSpec_Authors). All rights reserved.</NuSpec_Copyright>
+    </PropertyGroup>
+  
+    <!-- Check for required properties -->
+    <Error Condition=" '$(NuSpec_OutputPath)' == '' " Text="NuSpec output path must be non-empty" />
+    <Error Condition=" '$(NuSpec_ID)' == '' " Text="NuSpec package ID must be non-empty" />
+    <Error Condition=" '$(NuSpec_Version)' == '' " Text="NuSpec package version must be non-empty" />
+    <Error Condition=" '$(NuSpec_Authors)' == '' " Text="NuSpec package authors must be non-empty" />
+    <Error Condition=" '$(NuSpec_Description)' == '' " Text="NuSpec package description must be non-empty" />
+    
+    <!-- Build Parameters -->
+    <PropertyGroup>
+      <NuSpec_XMLContent><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>$(NuSpec_ID)</id>
+    <version>$(NuSpec_Version)</version>
+    <title>$(NuSpec_Title)</title>
+    <authors>$(NuSpec_Authors)</authors>
+    <owners>$(NuSpec_Owners)</owners>
+    <description>$(NuSpec_Description)</description>
+    <releaseNotes>$(NuSpec_ReleaseNotes)</releaseNotes>
+    <summary>$(NuSpec_Summary)</summary>
+    <language>$(NuSpec_Language)</language>
+    <projectUrl>$(NuSpec_ProjectURL)</projectUrl>
+    <iconUrl>$(NuSpec_IconURL)</iconUrl>
+    <licenseUrl>$(NuSpec_LicenseURL)</licenseUrl>
+    <copyright>$(NuSpec_Copyright)</copyright>
+    <requireLicenseAcceptance>$(NuSpec_RequireLicenseAcceptance)</requireLicenseAcceptance>
+    <tags>$(NuSpec_Tags)</tags>
+    <developmentDependency>$(NuSpec_DevelopmentDependency)</developmentDependency>
+    <references>$(NuSpec_ReferencesXML)</references>
+    <dependencies>$(NuSpec_DependenciesXML)</dependencies>
+    <frameworkAssemblies>$(NuSpec_FrameworkAssembliesXML)</frameworkAssemblies>
+  </metadata>
+  <files>
+    $(NuSpec_FilesXML)
+  </files>
+</package>]]></NuSpec_XMLContent>
+    </PropertyGroup>
+    
+    <!-- Check for directory existence (WriteLinesToFile task fails if directory doesn't exist...) -->
+    <PropertyGroup>
+      <NuSpec_OutputPathDir>$([System.IO.Path]::GetDirectoryName($(NuSpec_OutputPath)))</NuSpec_OutputPathDir>
+    </PropertyGroup>
+    <MakeDir Condition="!Exists($(NuSpec_OutputPathDir))" Directories="$(NuSpec_OutputPathDir)" />
+    
+    <!-- Write xml to file -->
+    <WriteLinesToFile
+      File="$(NuSpec_OutputPath)"
+      Lines="$(NuSpec_XMLContent)"
+      Overwrite="true"
+      Encoding="utf-8"
+      />
+  </Target>
+</Project>

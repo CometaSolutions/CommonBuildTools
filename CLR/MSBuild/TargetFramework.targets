@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- This .targets file exposes DeleteTargetFrameworkFile target, which will delete the file containing [assembly: TargetFramework(...)] attribute. -->
+  
+  <Target Name="DeleteTargetFrameworkFile">
+    <!-- GenerateTargetFrameworkMonikerAttribute target has its input as
+         $(MSBuildToolsPath)\Microsoft.Common.targets
+         and output as
+         $(TargetFrameworkMonikerAssemblyAttributesPath)
+         In Mono, the output is not shared (and it is part of clean process).
+         Remove the file in order to force Mono to re-create the file.
+         This way TargetFrameworkAttribute will be applied correctly in Mono.
+         Otherwise, only first clean build will apply TargetFrameworkAttribute.
+         Subsequent builds will not include the file.
+         On MSBuild everything works ok since the the output is shared. -->
+         
+    <Delete
+       Files="$(TargetFrameworkMonikerAssemblyAttributesPath)"
+       ContinueOnError="true"
+    />
+  </Target>
+</Project>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- This .targets file exposes GenerateAssemblyInfoFile target which will generate source file containing assembly-scope attributes, based on input given in .csproj file -->
+  
+  <PropertyGroup>
+    <AssemblyInfoTaskAssembly Condition=" '$(AssemblyInfoTaskAssembly)' == '' ">$(MSBuildThisFileDirectory)CommonBuildTools.AssemblyInfo.dll</AssemblyInfoTaskAssembly>
+  </PropertyGroup>
+
+  <UsingTask
+    TaskName="CommonBuildTools.AssemblyInfoTask"
+    AssemblyFile="$(AssemblyInfoTaskAssembly)" />
+   
+  <!-- Emit the source file containing version information -->
+  <Target Name="GenerateAssemblyInfoFile">
+  
+    <!-- Read version information from file, if needed -->
+    <ReadLinesFromFile Condition="'$(AssemblyInfoVersionFilename)' != ''" File="$(AssemblyInfoVersionFilename)">
+      <Output TaskParameter="Lines"
+        ItemName="AssemblyInfoVersionItem" />
+    </ReadLinesFromFile>
+    <PropertyGroup Condition="'$(AssemblyInfoVersionFilename)' != ''">
+      <AssemblyInfoVersion>%(AssemblyInfoVersionItem.Identity)</AssemblyInfoVersion>
+    </PropertyGroup>
+
+    <!-- Check and set properties to use in assembly information -->
+    <PropertyGroup>
+      <AssemblyInfoVersion Condition=" '$(AssemblyInfoVersion)' == '' ">0.0.0.0</AssemblyInfoVersion>
+      <AssemblyInfoFileVersion Condition=" '$(AssemblyInfoFileVersion)' == '' ">$(AssemblyInfoVersion)</AssemblyInfoFileVersion>
+      <AssemblyInfoInformationalVersionToUse Condition=" '$(AssemblyInfoInformationalVersion)' == '' ">$(AssemblyInfoVersion)</AssemblyInfoInformationalVersionToUse>
+      <AssemblyInfoInformationalVersionToUse Condition=" '$(AssemblyInfoInformationalVersion)' != '' ">$(AssemblyInfoVersion) $(AssemblyInfoInformationalVersion)</AssemblyInfoInformationalVersionToUse>
+      <AssemblyInfoNeutralResourcesLang Condition=" '$(AssemblyInfoNeutralResourcesLang)' == '' ">en</AssemblyInfoNeutralResourcesLang>
+      <AssemblyInfoCopyrightContent Condition=" '$(AssemblyInfoCopyrightContent)' == '' and '$(AssemblyInfoCopyrightAuthors)' != '' ">Copyright © $(AssemblyInfoCopyrightAuthors)</AssemblyInfoCopyrightContent>
+    </PropertyGroup>
+  
+    <!-- Create required XML information for AssemblyInfo task to generate assembly attributes -->
+    <PropertyGroup>
+    <AssemblyInfoAttributeXMLInfo>
+      <AssemblyAttributes xmlns="">
+        <AssemblyAttribute Namespace="System" Name="CLSCompliant">
+          <ConstructorArgument>
+            <Literal TypeCode="Boolean" >$(AssemblyInfoCLSCompliant)</Literal>
+          </ConstructorArgument>
+        </AssemblyAttribute>
+        <AssemblyAttribute Namespace="System.Reflection" Name="AssemblyTitle">
+          <ConstructorArgument>
+            <Literal TypeCode="String" >$(AssemblyName)</Literal>
+          </ConstructorArgument>
+        </AssemblyAttribute>
+        <AssemblyAttribute Namespace="System.Reflection" Name="AssemblyDescription">
+          <ConstructorArgument>
+            <Literal TypeCode="String" >$(AssemblyInfoDescription)</Literal>
+          </ConstructorArgument>
+        </AssemblyAttribute>
+        <AssemblyAttribute Namespace="System.Reflection" Name="AssemblyConfiguration">
+          <ConstructorArgument>
+            <Literal TypeCode="String" >$(Configuration)</Literal>
+          </ConstructorArgument>
+        </AssemblyAttribute>
+        <AssemblyAttribute Namespace="System.Reflection" Name="AssemblyCompany">
+          <ConstructorArgument>
+            <Literal TypeCode="String" >$(AssemblyInfoCompany)</Literal>
+          </ConstructorArgument>
+        </AssemblyAttribute>
+        <AssemblyAttribute Namespace="System.Reflection" Name="AssemblyCopyright">
+          <ConstructorArgument>
+            <Literal TypeCode="String" >$(AssemblyInfoCopyrightContent)</Literal>
+          </ConstructorArgument>
+        </AssemblyAttribute>
+        <AssemblyAttribute Namespace="System.Reflection" Name="AssemblyTrademark">
+          <ConstructorArgument>
+            <Literal TypeCode="String" >$(AssemblyInfoTrademark)</Literal>
+          </ConstructorArgument>
+        </AssemblyAttribute>
+        <AssemblyAttribute Namespace="System.Reflection" Name="AssemblyVersion">
+          <ConstructorArgument>
+            <Literal TypeCode="String" >$(AssemblyInfoVersion)</Literal>
+          </ConstructorArgument>
+        </AssemblyAttribute>
+        <AssemblyAttribute Namespace="System.Reflection" Name="AssemblyFileVersion">
+          <ConstructorArgument>
+            <Literal TypeCode="String" >$(AssemblyInfoFileVersion)</Literal>
+          </ConstructorArgument>
+        </AssemblyAttribute>
+        <AssemblyAttribute Namespace="System.Reflection" Name="AssemblyInformationalVersion">
+          <ConstructorArgument>
+            <Literal TypeCode="String" >$(AssemblyInfoInformationalVersionToUse)</Literal>
+          </ConstructorArgument>
+        </AssemblyAttribute>
+        <AssemblyAttribute Namespace="System.Resources" Name="NeutralResourcesLanguage">
+          <ConstructorArgument>
+            <Literal TypeCode="String" >$(AssemblyInfoNeutralResourcesLang)</Literal>
+          </ConstructorArgument>
+        </AssemblyAttribute>
+      </AssemblyAttributes>
+    </AssemblyInfoAttributeXMLInfo>
+    </PropertyGroup>
+  
+    <!-- Call the AssemblyInfo task to generate the file -->
+    <CommonBuildTools.AssemblyInfoTask
+      OutputFile="$(AssemblyInfoOutputFile)"
+      AssemblyAttributeXMLInfo="$(AssemblyInfoAttributeXMLInfo)"
+      Language="$(AssemblyInfoLanguage)"
+      AppendAssemblyCopyrightYears="$(AssemblyInfoAppendAssemblyCopyrightYears)"
+      AssemblyInceptionYear="$(AssemblyInfoAssemblyInceptionYear)"
+      />
+  </Target>
+</Project>

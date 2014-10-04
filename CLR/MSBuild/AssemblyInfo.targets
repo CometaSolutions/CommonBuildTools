@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- This .targets file exposes GenerateAssemblyInfoFile target which will generate source file containing assembly-scope attributes, based on input given in .csproj file -->
+  <!--
+  This .targets file exposes GenerateAssemblyInfoFile target which will generate source file containing assembly-scope attributes, based on input given in .csproj file
+  It is similar to the AssemblyInfo task of MSBuild.Community.Tasks, but this task knows to create directory file, if it doesn't exist, and also will not write file if the current contents are identical to the ones existing on disk (thus reducing build times).
+  -->
   
   <PropertyGroup>
     <AssemblyInfoTaskAssembly Condition=" '$(AssemblyInfoTaskAssembly)' == '' ">$(MSBuildThisFileDirectory)CommonBuildTools.AssemblyInfo.dll</AssemblyInfoTaskAssembly>

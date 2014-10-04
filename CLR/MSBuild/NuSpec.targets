@@ -17,7 +17,7 @@
       <NuSpec_CopyrightCurrentYear>$([System.DateTime]::Now.Year)</NuSpec_CopyrightCurrentYear>
       <NuSpec_Copyright>Copyright $(NuSpec_CopyrightInceptionYear)</NuSpec_Copyright>
       <NuSpec_Copyright Condition=" '$(NuSpec_CopyrightInceptionYear)' !=  '$(NuSpec_CopyrightCurrentYear)' ">$(NuSpec_Copyright)-$(NuSpec_CopyrightCurrentYear)</NuSpec_Copyright>
-      <NuSpec_Copyright>, $(NuSpec_Authors). All rights reserved.</NuSpec_Copyright>
+      <NuSpec_Copyright>$(NuSpec_Copyright), $(NuSpec_Authors). All rights reserved.</NuSpec_Copyright>
     </PropertyGroup>
   
     <!-- Check for required properties -->

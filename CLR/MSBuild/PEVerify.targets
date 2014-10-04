@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- This .targets file exposes PEVerifyFiles target, which will run PEVerify on given files. -->
+  <!-- It will run PEVerify for items specified in PEVerifyFiles items -->
+  
+  <Target Name="PEVerifyFiles">
+    <GetFrameworkSdkPath>
+      <Output TaskParameter="Path" PropertyName="PEVerify_FrameworkSDKPath" />
+    </GetFrameworkSdkPath>
+    <ItemGroup>
+      <MatchingPEVerifyFile Include="$(PEVerify_FrameworkSDKPath)bin\*\PEVerify.exe" />
+    </ItemGroup>
+    <PropertyGroup>
+      <PEVerify>%(MatchingPEVerifyFile.Identity)</PEVerify>
+      <PEVerify Condition="!Exists('$(PEVerify)')">$(PEVerify_FrameworkSDKPath)bin\NETFX 4.0 Tools\PEVerify.exe</PEVerify>
+    </PropertyGroup>
+    
+    <!-- Check PEVerify existence -->
+    <Error Condition=" !Exists($(PEVerify)) " Text="Failed to locate PEVerify executable (deduced to $(PEVerify))"/>
+    <!-- Execute PEVerify -->
+    <Exec Condition=" Exists($(PEVerify)) " Command="&quot;$(PEVerify)&quot; &quot;%(PEVerifyFiles.Identity)&quot; /IL /MD /VERBOSE /NOLOGO" />
+  </Target>
+</Project>

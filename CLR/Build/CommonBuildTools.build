@@ -8,10 +8,10 @@
   
   <!-- Projects to build, in build order -->
   <ItemGroup>
-    <CommonBuildToolsProject Include="$(CommonBuildToolsBaseDir)/Source/CommonBuildTools.AssemblyInfo/CommonBuildTools.AssemblyInfo.csproj" />
+    <CommonBuildToolsProject Include="$(CommonBuildToolsBaseDir)/Source/CommonBuildTools/CommonBuildTools.csproj" />
   </ItemGroup>
   
-  <Target Name="Build">
+  <Target Name="Build" Condition=" '$(OS)' == 'Unix' ">
     <MSBuild Projects="@(CommonBuildToolsProject)" Targets="Build" Properties="Configuration=$(CommonBuildToolsConfiguration);Platform=$(CommonBuildToolsPlatform)" />
   </Target>
 </Project>

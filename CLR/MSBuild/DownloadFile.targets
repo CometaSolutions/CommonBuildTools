@@ -3,34 +3,22 @@
 <!-- This .targets file exposes general-purpose task to download files from the Web. -->
 
   <UsingTask
-    TaskName="DownloadFile"
-    TaskFactory="CodeTaskFactory"
-    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.DownloadFileTask"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.DownloadFileTask"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
     <ParameterGroup>
-      <Address ParameterType="System.String" Required="True" />
-      <FilePath ParameterType="System.String" Required="True" />
+      <URI ParameterType="System.String" Required="True" />
+      <FilePath ParameterType="System.String" Required="true" />
     </ParameterGroup>
     <Task>
       <Reference Include="System.Core" />
-      <Using Namespace="System.Net" />
-      <Code Type="Fragment" Language="cs"><![CDATA[
-        var address = this.Address;
-        try
-        {
-          var fn = System.IO.Path.GetFullPath(this.FilePath);
-
-          this.Log.LogMessage( MessageImportance.High, "Downloading from {0} to {1}.", address, fn );
-          using( var webClient = new WebClient())
-          {
-            webClient.DownloadFile(address, fn);
-          }
-          return true;
-        }
-        catch (Exception exc) {
-          this.Log.LogErrorFromException(exc);
-          return false;
-        }
-        ]]></Code>
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/DownloadFileTask.cs" />
     </Task>
   </UsingTask>
 </Project>

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonBuildTools.AssemblyInfo", "CommonBuildTools.AssemblyInfo\CommonBuildTools.AssemblyInfo.csproj", "{39F29D60-63EF-4719-8D44-2E51E405AEE0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonBuildTools", "CommonBuildTools\CommonBuildTools.csproj", "{39F29D60-63EF-4719-8D44-2E51E405AEE0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

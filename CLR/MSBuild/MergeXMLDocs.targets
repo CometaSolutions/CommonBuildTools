@@ -34,62 +34,24 @@
   
   -->
   
-  <UsingTask TaskName="MergeXMLDocsTask"
-      TaskFactory="CodeTaskFactory"
-      AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.MergeXMLDocsTask"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.MergeXMLDocsTask"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
     <ParameterGroup>
-      <MainXMLDoc ParameterType="System.String" />
+      <MainXMLDoc ParameterType="System.String" Required="True" />
       <XMLDocFragments ParameterType="Microsoft.Build.Framework.ITaskItem[]" />
     </ParameterGroup>
     <Task>
 	  <Reference Include="System.Xml" />
 	  <Reference Include="System.Xml.Linq" />
-      <Using Namespace="System.Xml.Linq" />
-      <Using Namespace="System.Xml.XPath" />
-      <Code Type="Fragment"
-            Language="cs"><![CDATA[
-         // Save main xml filename
-         var mainXmlFN = this.MainXMLDoc;
-
-         // Read main XML document
-         if ( !File.Exists( mainXmlFN ) )
-         {
-           this.Log.LogError( "The main documentation file {0} does not exist.", mainXmlFN );
-           return false;
-         }
-         
-         var mainXml = XDocument.Load( mainXmlFN );
-
-         // Get the members node
-         var membersXml = mainXml.XPathSelectElement( "/doc/members" );
-
-         // Iterate through xml doc fragments
-         foreach ( var fragment in this.XMLDocFragments )
-         {
-            // Get fragment file name from metadata, or if it doesn't exist, use full name
-            var fragmentFN = fragment.GetMetadata( "XMLDoc" ) ?? fragment.GetMetadata( "FullPath" );
-			// Skip the file if it doesn't exist
-			if (File.Exists(fragmentFN))
-			{
-              // Append the children of <members> element to <members> node of main xml
-			  var elems = XElement.Load( fragmentFN ).XPathSelectElements( "members/*" );
-			  if (elems.Any())
-			  {
-                membersXml.Add( elems );
-                this.Log.LogMessage( Microsoft.Build.Framework.MessageImportance.High, "Merged XML doc fragment from {0}.", fragmentFN );
-		      } else
-              {
-                this.Log.LogWarning( "The XML fragment file {0} does not seem to contain any documentation.", fragmentFN );
-              }
-			} else
-			{
-			  this.Log.LogWarning( "The XML document fragment file {0} does not exist.", fragmentFN );
-			}
-         }
-
-         // Write result to main XML document
-         mainXml.Save( mainXmlFN );
-      ]]></Code>
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/MergeXMLDocsTask.cs" />
     </Task>
   </UsingTask>
   
@@ -101,7 +63,7 @@
        
     <!-- Execute task, if needed -->
     <Message Condition=" '$(MergeXMLDocs_MainXML)' == '' " Importance="High" Text="Skipping XML doc merging since no documentation file was defined." />
-    <MergeXMLDocsTask
+    <CommonBuildTools.MergeXMLDocsTask
       Condition=" '$(MergeXMLDocs_MainXML)' != '' "
       MainXMLDoc="$(MergeXMLDocs_MainXML)"
       XMLDocFragments="@(MergeXMLDocs_Fragments)"

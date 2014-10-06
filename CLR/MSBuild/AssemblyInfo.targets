@@ -6,14 +6,32 @@
   It is similar to the AssemblyInfo task of MSBuild.Community.Tasks, but this task knows to create directory file, if it doesn't exist, and also will not write file if the current contents are identical to the ones existing on disk (thus reducing build times).
   -->
   
-  <PropertyGroup>
-    <AssemblyInfoTaskAssembly Condition=" '$(AssemblyInfoTaskAssembly)' == '' ">$(MSBuildThisFileDirectory)CommonBuildTools.AssemblyInfo.dll</AssemblyInfoTaskAssembly>
-  </PropertyGroup>
-
   <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
     TaskName="CommonBuildTools.AssemblyInfoTask"
-    AssemblyFile="$(AssemblyInfoTaskAssembly)" />
-   
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.AssemblyInfoTask"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <Language ParameterType="System.String" />
+      <AssemblyAttributeXMLInfo ParameterType="System.String" Required="True" />
+      <OutputFile ParameterType="System.String" Required="True" />
+      <AppendAssemblyCopyrightYears ParameterType="System.Boolean" />
+      <AssemblyInceptionYear ParameterType="System.String" />
+    </ParameterGroup>
+    <Task>
+	  <Reference Include="Microsoft.CSharp" />
+      <Reference Include="System" />
+      <Reference Include="System.Xml" />
+	  <Reference Include="System.Xml.Linq" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/AssemblyInfoTask.cs" />
+    </Task>
+  </UsingTask>
+  
   <!-- Emit the source file containing version information -->
   <Target Name="GenerateAssemblyInfoFile">
   

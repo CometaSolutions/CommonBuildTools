@@ -21,14 +21,18 @@
     </PropertyGroup>
     
     <Message Condition="!Exists($(NuGetRestore_NuGetExe))" Text="NuGet executable $(NuGetRestore_NuGetExe) does not exist, downloading from https://www.nuget.org/nuget.exe." />
-    <DownloadFile Condition="!Exists($(NuGetRestore_NuGetExe))" Address="https://www.nuget.org/nuget.exe" FilePath="$(NuGetRestore_NuGetExe)" />   
+    <CommonBuildTools.DownloadFileTask
+      Condition="!Exists($(NuGetRestore_NuGetExe))"
+      URI="https://www.nuget.org/nuget.exe"
+      FilePath="$(NuGetRestore_NuGetExe)"
+      />   
 
     <!-- Select all path attributes of <repository> nodes -->
-    <SelectXMLNodes
+    <CommonBuildTools.SelectXMLNodesTask
       XMLDoc="$(NuGetRestore_RepositoriesFile)"
       XPath="/repositories/repository/@path">
       <Output TaskParameter="XMLNodes" ItemName="NuGetRestore_PackageFiles" />
-    </SelectXMLNodes>
+    </CommonBuildTools.SelectXMLNodesTask>
     
     <!-- Execute NuGet -->
     <PropertyGroup>

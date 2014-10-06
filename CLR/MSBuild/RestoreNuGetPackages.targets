@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- This .targets file exposes target to restore NuGet packages based on all package configuration files located in repositories.config file. -->
+  <!-- NuGet works fine in VS but on most build servers the building is done through command line, and if build is done from clean repository, the NuGet packages need to be restored. -->
+  
+  <!-- Import the DownloadFile task -->
+  <Import Project="$(MSBuildThisFileDirectory)DownloadFile.targets" />
+
+  <!-- Import the SelectXMLNodes targets file for SelectXMLNodes task -->
+  <Import Project="$(MSBuildThisFileDirectory)SelectXMLNodes.targets" />
+  
+  
+  <Target Name="RestoreNuGetPackages">  
+    <!-- Check repositories file -->
+    <Error Condition=" '$(NuGetRestore_RepositoriesFile)' == '' " Text="A path to repositories.config must be specified." />
+    
+    <!-- Check NuGet executable -->
+    <Message Condition=" '$(NuGetRestore_NuGetExe)' == '' " Text="A path to NuGet executable was not specified, using $(MSBuildThisFileDirectory)NuGet.exe." />
+    <PropertyGroup Condition=" '$(NuGetRestore_NuGetExe)' == '' ">
+      <NuGetRestore_NuGetExe>$(MSBuildThisFileDirectory)NuGet.exe</NuGetRestore_NuGetExe>
+    </PropertyGroup>
+    
+    <Message Condition="!Exists($(NuGetRestore_NuGetExe))" Text="NuGet executable $(NuGetRestore_NuGetExe) does not exist, downloading from https://www.nuget.org/nuget.exe." />
+    <DownloadFile Condition="!Exists($(NuGetRestore_NuGetExe))" Address="https://www.nuget.org/nuget.exe" FilePath="$(NuGetRestore_NuGetExe)" />   
+
+    <!-- Select all path attributes of <repository> nodes -->
+    <SelectXMLNodes
+      XMLDoc="$(NuGetRestore_RepositoriesFile)"
+      XPath="/repositories/repository/@path">
+      <Output TaskParameter="XMLNodes" ItemName="NuGetRestore_PackageFiles" />
+    </SelectXMLNodes>
+    
+    <!-- Execute NuGet -->
+    <PropertyGroup>
+      <NuGetRestore_NuGetExe>&quot;$(NuGetRestore_NuGetExe)&quot;</NuGetRestore_NuGetExe>
+      <NuGetRestore_NuGetExe Condition=" '$(OS)' == 'Unix' ">mono $(NuGetRestore_NuGetExe)</NuGetRestore_NuGetExe>
+    </PropertyGroup>
+    <Exec
+      Command="$(NuGetRestore_NuGetExe) restore &quot;%(NuGetRestore_PackageFiles.Identity)&quot; -Verbosity detailed -NonInteractive"
+      WorkingDirectory="$([System.IO.Path]::GetDirectoryName($(NuGetRestore_RepositoriesFile)))"
+      />
+  </Target>
+</Project>

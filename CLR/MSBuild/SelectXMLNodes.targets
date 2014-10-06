@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- This .targets file exposes a task to select XML nodes from XML file into MSBuild items. -->
+  
+  <UsingTask TaskName="SelectXMLNodes"
+      TaskFactory="CodeTaskFactory"
+      AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <XMLDoc ParameterType="System.String" Required="True" />
+      <XPath ParameterType="System.String" Required="true" />
+      <XMLNodes ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="True" />
+    </ParameterGroup>
+    <Task>
+	  <Reference Include="System.Xml" />
+	  <Reference Include="System.Xml.Linq" />
+      <Using Namespace="System.Xml" />
+      <Using Namespace="System.Xml.Linq" />
+      <Using Namespace="System.Xml.XPath" />
+      <Code Type="Fragment"
+            Language="cs"><![CDATA[
+        // Save XML file name
+        var xmlFN = this.XMLDoc;
+        
+        if (String.IsNullOrEmpty(xmlFN))
+        {
+          this.Log.LogError("The XML filename path must be non-empty.");
+          return false;
+        }
+        
+        // Read XML file
+        var xml = XDocument.Load( xmlFN );
+        
+        // Perform transformation ( XPathEvaluate will return either boolean, double, string, or IEnumerable<T> )
+        var nodes = xml.XPathEvaluate( this.XPath ); // Select all nodes matching the given XPath expression
+        IEnumerable<String> enumerable;
+        switch(Type.GetTypeCode(nodes.GetType()))
+        {
+          case TypeCode.Boolean:
+          case TypeCode.Double:
+          case TypeCode.String:
+            enumerable = Enumerable.Repeat((String)Convert.ChangeType(nodes, typeof(String)), 1);
+            break;
+          default:
+            // IEnumerable<T>
+            enumerable = ((IEnumerable)nodes).Cast<XObject>().Select(node =>
+            {
+              switch(node.NodeType)
+              {
+                case XmlNodeType.Attribute:
+                  // Default .ToString() of attribute is 'name=value' which is usually not wanted.
+                  return ((XAttribute)node).Value;
+                default:
+                  return node.ToString();
+              }
+            });
+            break;
+        }
+        this.XMLNodes = enumerable
+            .Select( str => new TaskItem(str)) // Create task item for each node
+            .ToArray(); // Create an array
+      ]]></Code>
+    </Task>
+  </UsingTask>
+</Project>

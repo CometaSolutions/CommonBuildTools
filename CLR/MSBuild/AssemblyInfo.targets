@@ -32,17 +32,18 @@
     </Task>
   </UsingTask>
   
+  <!-- Import the ReadVersionFromFile targets file for ReadVersionFromFileTask task --> 
+  <Import Project="$(MSBuildThisFileDirectory)ReadVersionFromFile.targets" />
+  
   <!-- Emit the source file containing version information -->
   <Target Name="GenerateAssemblyInfoFile">
   
     <!-- Read version information from file, if needed -->
-    <ReadLinesFromFile Condition="'$(AssemblyInfoVersionFilename)' != ''" File="$(AssemblyInfoVersionFilename)">
-      <Output TaskParameter="Lines"
-        ItemName="AssemblyInfoVersionItem" />
-    </ReadLinesFromFile>
-    <PropertyGroup Condition="'$(AssemblyInfoVersionFilename)' != ''">
-      <AssemblyInfoVersion>%(AssemblyInfoVersionItem.Identity)</AssemblyInfoVersion>
-    </PropertyGroup>
+    <CommonBuildTools.ReadVersionFromFileTask
+      Condition=" '$(AssemblyInfoVersionFilename)' != '' "
+      VersionFilePath="$(AssemblyInfoVersionFilename)">
+      <Output TaskParameter="VersionString" PropertyName="AssemblyInfoVersion" />
+    </CommonBuildTools.ReadVersionFromFileTask>
 
     <!-- Check and set properties to use in assembly information -->
     <PropertyGroup>

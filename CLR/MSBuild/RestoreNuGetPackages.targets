@@ -9,6 +9,8 @@
   <!-- Import the SelectXMLNodes targets file for SelectXMLNodes task -->
   <Import Project="$(MSBuildThisFileDirectory)SelectXMLNodes.targets" />
   
+  <!-- Import the GetDirectoryPathFromFilePath targets file for GetDirectoryPathFromFilePathTask task --> 
+  <Import Project="$(MSBuildThisFileDirectory)GetDirectoryPathFromFilePath.targets" />
   
   <Target Name="RestoreNuGetPackages">  
     <!-- Check repositories file -->
@@ -39,9 +41,16 @@
       <NuGetRestore_NuGetExe>&quot;$(NuGetRestore_NuGetExe)&quot;</NuGetRestore_NuGetExe>
       <NuGetRestore_NuGetExe Condition=" '$(OS)' == 'Unix' ">mono $(NuGetRestore_NuGetExe)</NuGetRestore_NuGetExe>
     </PropertyGroup>
+    
+    <CommonBuildTools.GetDirectoryPathFromFilePathTask
+      FilePath="$(NuGetRestore_RepositoriesFile)">
+      <Output TaskParameter="DirectoryPath" PropertyName="NuGetRestore_RepositoriesDir" />
+    </CommonBuildTools.GetDirectoryPathFromFilePathTask>
+    
+    <Message Importance="High" Text="FUFUFUFUGGGGAA: $(TESTINGGGG)" />
     <Exec
       Command="$(NuGetRestore_NuGetExe) restore &quot;%(NuGetRestore_PackageFiles.Identity)&quot; -Verbosity detailed -NonInteractive"
-      WorkingDirectory="$([System.IO.Path]::GetDirectoryName($(NuGetRestore_RepositoriesFile)))"
+      WorkingDirectory="$(NuGetRestore_RepositoriesDir)"
       />
   </Target>
 </Project>

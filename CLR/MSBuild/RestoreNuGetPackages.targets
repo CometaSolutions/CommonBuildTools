@@ -46,8 +46,6 @@
       FilePath="$(NuGetRestore_RepositoriesFile)">
       <Output TaskParameter="DirectoryPath" PropertyName="NuGetRestore_RepositoriesDir" />
     </CommonBuildTools.GetDirectoryPathFromFilePathTask>
-    
-    <Message Importance="High" Text="FUFUFUFUGGGGAA: $(TESTINGGGG)" />
     <Exec
       Command="$(NuGetRestore_NuGetExe) restore &quot;%(NuGetRestore_PackageFiles.Identity)&quot; -Verbosity detailed -NonInteractive"
       WorkingDirectory="$(NuGetRestore_RepositoriesDir)"

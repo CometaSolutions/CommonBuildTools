@@ -53,6 +53,7 @@
       <AssemblyInfoInformationalVersionToUse Condition=" '$(AssemblyInfoInformationalVersion)' != '' ">$(AssemblyInfoVersion) $(AssemblyInfoInformationalVersion)</AssemblyInfoInformationalVersionToUse>
       <AssemblyInfoNeutralResourcesLang Condition=" '$(AssemblyInfoNeutralResourcesLang)' == '' ">en</AssemblyInfoNeutralResourcesLang>
       <AssemblyInfoCopyrightContent Condition=" '$(AssemblyInfoCopyrightContent)' == '' and '$(AssemblyInfoCopyrightAuthors)' != '' ">Copyright © $(AssemblyInfoCopyrightAuthors)</AssemblyInfoCopyrightContent>
+      <AssemblyInfoTitle Condition=" '$(AssemblyInfoTitle)' == ''">$(AssemblyName)</AssemblyInfoTitle>
     </PropertyGroup>
   
     <!-- Create required XML information for AssemblyInfo task to generate assembly attributes -->
@@ -66,7 +67,7 @@
         </AssemblyAttribute>
         <AssemblyAttribute Namespace="System.Reflection" Name="AssemblyTitle">
           <ConstructorArgument>
-            <Literal TypeCode="String" >$(AssemblyName)</Literal>
+            <Literal TypeCode="String" >$(AssemblyInfoTitle)</Literal>
           </ConstructorArgument>
         </AssemblyAttribute>
         <AssemblyAttribute Namespace="System.Reflection" Name="AssemblyDescription">

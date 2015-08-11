@@ -32,7 +32,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,7 +46,7 @@
     <Compile Include="MergeXMLDocsTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadVersionFromFileTask.cs" />
-    <Compile Include="CreateNuGetPackagesFileTask.cs" />
+    <Compile Include="CreateNuGetPackagesFilesTask.cs" />
     <Compile Include="SelectXMLNodesTask.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

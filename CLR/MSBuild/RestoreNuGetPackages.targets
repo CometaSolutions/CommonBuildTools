@@ -5,50 +5,69 @@
   
   <!-- Import the DownloadFile task -->
   <Import Project="$(MSBuildThisFileDirectory)DownloadFile.targets" />
+  
+  <!-- Task to generate package.config files and NuGet restore command line arguments -->
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.CreateNuGetPackagesFilesTask"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.CreateNuGetPackagesFilesTask"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <NuGetManagementFile ParameterType="System.String" Required="False" />
+      <NuGetManagementContents ParameterType="System.String" Required="False" />
+      <NuGetPackagesFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="True" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Core" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/CreateNuGetPackagesFilesTask.cs" />
+    </Task>
+  </UsingTask>
 
-  <!-- Import the SelectXMLNodes targets file for SelectXMLNodes task -->
-  <Import Project="$(MSBuildThisFileDirectory)SelectXMLNodes.targets" />
-  
-  <!-- Import the GetDirectoryPathFromFilePath targets file for GetDirectoryPathFromFilePathTask task --> 
-  <Import Project="$(MSBuildThisFileDirectory)GetDirectoryPathFromFilePath.targets" />
-  
-  <Target Name="RestoreNuGetPackages">  
-    <!-- Check repositories file -->
-    <Error Condition=" '$(NuGetRestore_RepositoriesFile)' == '' " Text="A path to repositories.config must be specified." />
+  <Target Name="RestoreNuGetPackages">
+    <!-- Generate NuGet package files (use ErrorAndContinue in order to delete generated files) -->
+    <CommonBuildTools.CreateNuGetPackagesFilesTask
+      NuGetManagementFile="$(NuGetManagementFile)"
+      NuGetManagementContents="$(NuGetManagementContents)"
+      >
+      <Output TaskParameter="NuGetExecutableParameters" ItemName="NuGetExecutableParameters" />
+      <Output TaskParameter="NuGetPackagesConfigFiles" ItemName="NuGetPackagesConfigFiles" />
+    </CommonBuildTools.CreateNuGetPackagesFilesTask>
     
-    <!-- Check NuGet executable -->
-    <Message Condition=" '$(NuGetRestore_NuGetExe)' == '' " Text="A path to NuGet executable was not specified, using $(MSBuildThisFileDirectory)NuGet.exe." />
+    <!-- For each package file, run NuGet -->
+    <Message 
+      Condition=" '$(NuGetRestore_NuGetExe)' == '' "
+      Text="A path to NuGet executable was not specified, using $(MSBuildThisFileDirectory)NuGet.exe."
+      />
     <PropertyGroup Condition=" '$(NuGetRestore_NuGetExe)' == '' ">
       <NuGetRestore_NuGetExe>$(MSBuildThisFileDirectory)NuGet.exe</NuGetRestore_NuGetExe>
     </PropertyGroup>
     
-    <Message Condition="!Exists($(NuGetRestore_NuGetExe))" Text="NuGet executable $(NuGetRestore_NuGetExe) does not exist, downloading from https://www.nuget.org/nuget.exe." />
+    <!-- Download NuGet executable, if needed -->
+    <Message
+      Condition="!Exists($(NuGetRestore_NuGetExe))"
+      Text="NuGet executable $(NuGetRestore_NuGetExe) does not exist, downloading from https://www.nuget.org/nuget.exe."
+      />
     <CommonBuildTools.DownloadFileTask
       Condition="!Exists($(NuGetRestore_NuGetExe))"
       URI="https://www.nuget.org/nuget.exe"
       FilePath="$(NuGetRestore_NuGetExe)"
-      />   
-
-    <!-- Select all path attributes of <repository> nodes -->
-    <CommonBuildTools.SelectXMLNodesTask
-      XMLDoc="$(NuGetRestore_RepositoriesFile)"
-      XPath="/repositories/repository/@path">
-      <Output TaskParameter="XMLNodes" ItemName="NuGetRestore_PackageFiles" />
-    </CommonBuildTools.SelectXMLNodesTask>
+      ContinueOnError="ErrorAndContinue"
+      />
     
-    <!-- Execute NuGet -->
-    <PropertyGroup>
-      <NuGetRestore_NuGetExe>&quot;$(NuGetRestore_NuGetExe)&quot;</NuGetRestore_NuGetExe>
-      <NuGetRestore_NuGetExe Condition=" '$(OS)' == 'Unix' ">mono $(NuGetRestore_NuGetExe)</NuGetRestore_NuGetExe>
-    </PropertyGroup>
-    
-    <CommonBuildTools.GetDirectoryPathFromFilePathTask
-      FilePath="$(NuGetRestore_RepositoriesFile)">
-      <Output TaskParameter="DirectoryPath" PropertyName="NuGetRestore_RepositoriesDir" />
-    </CommonBuildTools.GetDirectoryPathFromFilePathTask>
+    <!-- Run NuGet for all package files -->
     <Exec
-      Command="$(NuGetRestore_NuGetExe) restore &quot;%(NuGetRestore_PackageFiles.Identity)&quot; -Verbosity detailed -NonInteractive"
-      WorkingDirectory="$(NuGetRestore_RepositoriesDir)"
+      Command="&quot;$(NuGetRestore_NuGetExe)&quot; restore %(NuGetExecutableParameters)"
+      />
+    
+    <!-- Delete generated packages.config files -->
+    <Delete
+      Files="%(NuGetPackagesConfigFiles)"
+      ContinueOnError="WarnAndContinue"
       />
   </Target>
 </Project>

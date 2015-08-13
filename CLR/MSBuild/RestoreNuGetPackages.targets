@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- This .targets file exposes target to restore NuGet packages based on all package configuration files located in repositories.config file. -->
   <!-- NuGet works fine in VS but on most build servers the building is done through command line, and if build is done from clean repository, the NuGet packages need to be restored. -->
+  <!-- This .targets file exposes target to restore NuGet packages based on custom configuration file. -->
+  <!-- The file name should be in NuGetManagementFile property.
+       Alternatively, the file contents should be in NuGetManagementContents property.
+       Is neither is specified, then the target fails with error. -->
   
-  <!-- Import the DownloadFile task -->
-  <Import Project="$(MSBuildThisFileDirectory)DownloadFile.targets" />
+  <!-- Import the CallNuGetExecutableTask task -->
+  <Import Project="$(MSBuildThisFileDirectory)CallNuGetExecutableTask.targets" />
   
   <!-- Task to generate package.config files and NuGet restore command line arguments -->
   <UsingTask
@@ -38,28 +41,10 @@
     </CommonBuildTools.CreateNuGetPackagesFilesTask>
     
     <!-- For each package file, run NuGet -->
-    <Message 
-      Condition=" '$(NuGetRestore_NuGetExe)' == '' "
-      Text="A path to NuGet executable was not specified, using $(MSBuildThisFileDirectory)NuGet.exe."
-      />
-    <PropertyGroup Condition=" '$(NuGetRestore_NuGetExe)' == '' ">
-      <NuGetRestore_NuGetExe>$(MSBuildThisFileDirectory)NuGet.exe</NuGetRestore_NuGetExe>
-    </PropertyGroup>
-    
-    <!-- Download NuGet executable, if needed -->
-    <Message
-      Condition="!Exists($(NuGetRestore_NuGetExe))"
-      Text="NuGet executable $(NuGetRestore_NuGetExe) does not exist, downloading from https://www.nuget.org/nuget.exe."
-      />
-    <CommonBuildTools.DownloadFileTask
-      Condition="!Exists($(NuGetRestore_NuGetExe))"
-      URI="https://www.nuget.org/nuget.exe"
-      FilePath="$(NuGetRestore_NuGetExe)"
-      />
-    
-    <!-- Run NuGet for all package files -->
-    <Exec
-      Command="&quot;$(NuGetRestore_NuGetExe)&quot; restore %(NuGetPackagesConfigFiles->NuGetParameters)"
+    <CommonBuildTools.CallNuGetExecutableTask
+      NuGetExecutable="$(NuGetRestore_NuGetExe)"
+      NuGetArguments="restore %(NuGetPackagesConfigFiles->NuGetParameters)"
+      ContinueOnError="ErrorAndContinue"
       />
     
     <!-- Delete generated packages.config files -->

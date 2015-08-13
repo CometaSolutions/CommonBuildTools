@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- This .targets file exposes target to generate .nupkg file.
+       The path to NuGet executable should be specified in NuGetPack_NuGetExe property.
+       If no such property is declared or if it is empty, the NuGet.exe will be assumed to be in same directory with this file.
+       The path to NuSpec file should be specified in NuGetPack_NuSpec property.
+       -->
+  
+  <!-- Import the CallNuGetExecutableTask task -->
+  <Import Project="$(MSBuildThisFileDirectory)CallNuGetExecutableTask.targets" />
+  
+  <Target Name="GenerateNuGetPackage">
+    <Error Condition=" '$(NuGetPack_NuSpec)' == '' " Message="A path to NuSpec file must be specified." />
+    
+    <!-- Build arguments for NuGet pack command -->
+    <PropertyGroup>
+      <NuGetPack_Args>pack &quot;$(NuGetPack_NuSpec)&quot;</NuGetPack_Args>
+      <NuGetPack_Args Condition=" '$(NuGetPack_OutputDirectory)' != '' "> -OutputDirectory &quot;$(NuGetPack_OutputDirectory)&quot;</NuGetPack_Args>
+      <NuGetPack_Args Condition=" '$(NuGetPack_BasePath)' != '' "> -BasePath &quot;$(NuGetPack_BasePath)&quot;</NuGetPack_Args>
+      <NuGetPack_Args Condition=" '$(NuGetPack_Version)' != '' "> -Version &quot;$(NuGetPack_Version)&quot;</NuGetPack_Args>
+      <NuGetPack_Args Condition=" '$(NuGetPack_ExcludeEmptyDirectories)' != '' "> -ExcludeEmptyDirectories</NuGetPack_Args>
+      <NuGetPack_Args Condition=" '$(NuGetPack_MinClientVersion)' != '' "> -MinClientVersion &quot;$(NuGetPack_MinClientVersion)&quot;</NuGetPack_Args>
+      <NuGetPack_Args>$(NuGetPack_Args) -Verbosity detailed -NonInteractive</NuGetPack_Args>
+    </PropertyGroup>
+    
+    <CommonBuildTools.CallNuGetExecutableTask
+      NuGetExecutable="$(NuGetRestore_NuGetExe)"
+      NuGetArguments="$(NuGetPack_Args)"
+      />
+  </Target>
+</Project>

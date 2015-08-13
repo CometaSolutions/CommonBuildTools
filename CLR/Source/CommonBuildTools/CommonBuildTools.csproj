@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfoTask.cs" />
+    <Compile Include="CallNuGetExecutableTask.cs" />
     <Compile Include="DownloadFileTask.cs" />
     <Compile Include="GetDirectoryPathFromFilePathTask.cs" />
     <Compile Include="MergeXMLDocsTask.cs" />

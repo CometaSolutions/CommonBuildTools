@@ -25,6 +25,7 @@ using System.Net;
 
 namespace CommonBuildTools
 {
+
    public class DownloadFileTask : Task
    {
       [Required]
@@ -33,25 +34,31 @@ namespace CommonBuildTools
       [Required]
       public String FilePath { get; set; }
 
-      public override bool Execute()
+      public override Boolean Execute()
       {
-         var address = this.URI;
+         return DoDownload( this.URI, this.FilePath, this.Log );
+      }
+
+      internal static Boolean DoDownload( String uri, String filePath, TaskLoggingHelper log )
+      {
+         var retVal = false;
          try
          {
-            var fn = System.IO.Path.GetFullPath( this.FilePath );
+            var fn = System.IO.Path.GetFullPath( filePath );
 
-            this.Log.LogMessage( MessageImportance.High, "Downloading from {0} to {1}.", address, fn );
+            log.LogMessage( MessageImportance.High, "Downloading from {0} to {1}.", uri, fn );
             using ( var webClient = new WebClient() )
             {
-               webClient.DownloadFile( address, fn );
+               webClient.DownloadFile( uri, fn );
             }
-            return true;
+            retVal = true;
          }
          catch ( Exception exc )
          {
-            this.Log.LogErrorFromException( exc );
-            return false;
+            log.LogErrorFromException( exc );
          }
+
+         return retVal;
       }
    }
 }

@@ -10,8 +10,8 @@
   <Import Project="$(MSBuildThisFileDirectory)CallNuGetExecutable.targets" />
   
   <Target Name="GenerateNuGetPackage">
-    <Error Condition=" '$(NuGetPack_NuSpec)' == '' " Message="A path to NuSpec file must be specified." />
-    <Error Condition="!Exists('$(NuGetPack_NuSpec)')" Message="NuSpec file $(NuGetPack_NuSpec) does not exist." />
+    <Error Condition=" '$(NuGetPack_NuSpec)' == '' " Text="A path to NuSpec file must be specified." />
+    <Error Condition="!Exists('$(NuGetPack_NuSpec)')" Text="NuSpec file $(NuGetPack_NuSpec) does not exist." />
     
     <!-- Build arguments for NuGet pack command -->
     <PropertyGroup>

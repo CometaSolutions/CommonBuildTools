@@ -33,7 +33,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>$(NuSpec_ID)</id>
-    <version>$(NuSpec_Version)</version>
+    <version>$(NuSpec_Version)$(NuSpec_Version_Suffix)</version>
     <title>$(NuSpec_Title)</title>
     <authors>$(NuSpec_Authors)</authors>
     <owners>$(NuSpec_Owners)</owners>

@@ -34,7 +34,6 @@
       NuGetManagementFile="$(NuGetManagementFile)"
       NuGetManagementContents="$(NuGetManagementContents)"
       >
-      <Output TaskParameter="NuGetExecutableParameters" ItemName="NuGetExecutableParameters" />
       <Output TaskParameter="NuGetPackagesConfigFiles" ItemName="NuGetPackagesConfigFiles" />
     </CommonBuildTools.CreateNuGetPackagesFilesTask>
     
@@ -61,12 +60,12 @@
     
     <!-- Run NuGet for all package files -->
     <Exec
-      Command="&quot;$(NuGetRestore_NuGetExe)&quot; restore %(NuGetExecutableParameters)"
+      Command="&quot;$(NuGetRestore_NuGetExe)&quot; restore %(NuGetPackagesConfigFiles->NuGetParameters)"
       />
     
     <!-- Delete generated packages.config files -->
     <Delete
-      Files="%(NuGetPackagesConfigFiles)"
+      Files="@(NuGetPackagesConfigFiles)"
       ContinueOnError="WarnAndContinue"
       />
   </Target>

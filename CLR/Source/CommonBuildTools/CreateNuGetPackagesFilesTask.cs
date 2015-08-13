@@ -35,9 +35,6 @@ namespace CommonBuildTools
       public String NuGetManagementContents { get; set; }
 
       [Output]
-      public ITaskItem[] NuGetExecutableParameters { get; set; }
-
-      [Output]
       public ITaskItem[] NuGetPackagesConfigFiles { get; set; }
 
       public override Boolean Execute()
@@ -86,11 +83,8 @@ namespace CommonBuildTools
                var ngm = nuGetManagementDoc.Root.CreateNuGetManagement();
                packageInfos = this.ExtractPackagesFileInfos( ngm );
 
-               this.NuGetExecutableParameters = packageInfos
-                  .Select( pkg => ngm.CreateTaskItem( pkg ) )
-                  .ToArray();
                this.NuGetPackagesConfigFiles = packageInfos
-                  .Select( pkg => new TaskItem( pkg.PackagesConfigPath ) )
+                  .Select( pkg => ngm.CreateTaskItem( pkg ) )
                   .ToArray();
                this.CreatePackageConfigFiles( packageInfos );
 
@@ -550,7 +544,9 @@ internal static partial class E_CBT
 
       sb.Append( "-Verbosity detailed -NonInteractive" );
 
-      return new TaskItem( sb.ToString() );
+      var retVal = new TaskItem( info.PackagesConfigPath );
+      retVal.SetMetadata( "NuGetParameters", sb.ToString() );
+      return retVal;
    }
 
    private static Boolean ParseAsBooleanSafe( this String str )

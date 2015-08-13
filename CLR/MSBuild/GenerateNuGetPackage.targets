@@ -16,11 +16,11 @@
     <!-- Build arguments for NuGet pack command -->
     <PropertyGroup>
       <NuGetPack_Args>pack &quot;$(NuGetPack_NuSpec)&quot;</NuGetPack_Args>
-      <NuGetPack_Args Condition=" '$(NuGetPack_OutputDirectory)' != '' "> -OutputDirectory &quot;$(NuGetPack_OutputDirectory)&quot;</NuGetPack_Args>
-      <NuGetPack_Args Condition=" '$(NuGetPack_BasePath)' != '' "> -BasePath &quot;$(NuGetPack_BasePath)&quot;</NuGetPack_Args>
-      <NuGetPack_Args Condition=" '$(NuGetPack_Version)' != '' "> -Version &quot;$(NuGetPack_Version)&quot;</NuGetPack_Args>
-      <NuGetPack_Args Condition=" '$(NuGetPack_ExcludeEmptyDirectories)' != '' "> -ExcludeEmptyDirectories</NuGetPack_Args>
-      <NuGetPack_Args Condition=" '$(NuGetPack_MinClientVersion)' != '' "> -MinClientVersion &quot;$(NuGetPack_MinClientVersion)&quot;</NuGetPack_Args>
+      <NuGetPack_Args Condition=" '$(NuGetPack_OutputDirectory)' != '' ">$(NuGetPack_Args) -OutputDirectory &quot;$(NuGetPack_OutputDirectory)&quot;</NuGetPack_Args>
+      <NuGetPack_Args Condition=" '$(NuGetPack_BasePath)' != '' ">$(NuGetPack_Args) -BasePath &quot;$(NuGetPack_BasePath)&quot;</NuGetPack_Args>
+      <NuGetPack_Args Condition=" '$(NuGetPack_Version)' != '' ">$(NuGetPack_Args) -Version &quot;$(NuGetPack_Version)&quot;</NuGetPack_Args>
+      <NuGetPack_Args Condition=" '$(NuGetPack_ExcludeEmptyDirectories)' != '' ">$(NuGetPack_Args) -ExcludeEmptyDirectories</NuGetPack_Args>
+      <NuGetPack_Args Condition=" '$(NuGetPack_MinClientVersion)' != '' ">$(NuGetPack_Args) -MinClientVersion &quot;$(NuGetPack_MinClientVersion)&quot;</NuGetPack_Args>
       <NuGetPack_Args>$(NuGetPack_Args) -Verbosity detailed -NonInteractive</NuGetPack_Args>
     </PropertyGroup>
     

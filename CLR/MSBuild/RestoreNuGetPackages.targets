@@ -55,7 +55,6 @@
       Condition="!Exists($(NuGetRestore_NuGetExe))"
       URI="https://www.nuget.org/nuget.exe"
       FilePath="$(NuGetRestore_NuGetExe)"
-      ContinueOnError="ErrorAndContinue"
       />
     
     <!-- Run NuGet for all package files -->

@@ -7,7 +7,7 @@
        Is neither is specified, then the target fails with error. -->
   
   <!-- Import the CallNuGetExecutableTask task -->
-  <Import Project="$(MSBuildThisFileDirectory)CallNuGetExecutableTask.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)CallNuGetExecutable.targets" />
   
   <!-- Task to generate package.config files and NuGet restore command line arguments -->
   <UsingTask

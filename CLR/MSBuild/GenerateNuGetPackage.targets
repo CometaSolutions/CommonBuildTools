@@ -7,7 +7,7 @@
        -->
   
   <!-- Import the CallNuGetExecutableTask task -->
-  <Import Project="$(MSBuildThisFileDirectory)CallNuGetExecutableTask.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)CallNuGetExecutable.targets" />
   
   <Target Name="GenerateNuGetPackage">
     <Error Condition=" '$(NuGetPack_NuSpec)' == '' " Message="A path to NuSpec file must be specified." />

@@ -25,7 +25,7 @@
     </PropertyGroup>
     
     <CommonBuildTools.CallNuGetExecutableTask
-      NuGetExecutable="$(NuGetRestore_NuGetExe)"
+      NuGetExecutable="$(NuGetPack_NuGetExe)"
       NuGetArguments="$(NuGetPack_Args)"
       />
   </Target>

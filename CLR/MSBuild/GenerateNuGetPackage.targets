@@ -13,11 +13,14 @@
     AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
     TaskFactory="CodeTaskFactory">
     <ParameterGroup>
+      <NuGetExecutable ParameterType="System.String" Required="False" />
       <NuSpecFile ParameterType="System.String" Required="True" />
       <OutputDirectory ParameterType="System.String" Required="False" />
       <BasePath ParameterType="System.String" Required="False" />
       <Version ParameterType="System.String" Required="False" />
       <MinClientVersion ParameterType="System.String" Required="False" />
+      <NoDefaultExcludes ParameterType="System.Boolean" Required="False" />
+      <NoPackageAnalysis ParameterType="System.Boolean" Required="False" />
       <ExcludeEmptyDirectories ParameterType="System.Boolean" Required="False" />
     </ParameterGroup>
     <Task>

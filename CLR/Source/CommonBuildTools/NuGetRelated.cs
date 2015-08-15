@@ -599,6 +599,9 @@ namespace CommonBuildTools
       public ITaskItem[] Dependencies { get; set; }
       public ITaskItem[] FrameworkAssemblies { get; set; }
 
+      [Output]
+      public String GeneratedNuSpecFilePath { get; set; }
+
       public override Boolean Execute()
       {
          var version = this.VersionContents;
@@ -678,6 +681,8 @@ namespace CommonBuildTools
 
             new XDocument( new XDeclaration( "1.0", "utf-8", "yes" ), nuspec )
                .Save( outputPath );
+
+            this.GeneratedNuSpecFilePath = outputPath;
          }
          else
          {
@@ -860,6 +865,10 @@ namespace CommonBuildTools
 
       public String MinClientVersion { get; set; }
 
+      public Boolean NoDefaultExcludes { get; set; }
+
+      public Boolean NoPackageAnalysis { get; set; }
+
       public Boolean ExcludeEmptyDirectories { get; set; }
 
       protected override String GenerateCommandLineCommands()
@@ -876,6 +885,16 @@ namespace CommonBuildTools
          builder.AppendSwitchIfNotNull( "-Version ", this.Version );
 
          builder.AppendSwitchIfNotNull( "-MinClientVersion ", this.MinClientVersion );
+
+         if ( this.NoDefaultExcludes )
+         {
+            builder.AppendSwitch( "-NoDefaultExcludes " );
+         }
+
+         if ( this.NoPackageAnalysis )
+         {
+            builder.AppendSwitch( "-NoPackageAnalysis " );
+         }
 
          if ( this.ExcludeEmptyDirectories )
          {

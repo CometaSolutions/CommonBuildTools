@@ -36,6 +36,8 @@
       <DevelopmentDependency ParameterType="System.Boolean" Required="False" />
       <Dependencies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="False" />
       <FrameworkAssemblies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="False" />
+      
+      <GeneratedNuSpecFilePath ParameterType="System.String" Output="True" />
     </ParameterGroup>
     <Task>
       <Reference Include="System.Xml" />

@@ -494,7 +494,7 @@ internal static partial class E_CBT
    {
       return element == null ?
          null :
-         new NuGetManagement( element.ListOrEmpty( "Pacakges", "Package" ).Select( el => el.CreateNuGetPackage( ngmLocation ) ) )
+         new NuGetManagement( element.ListOrEmpty( "Packages", "Package" ).Select( el => el.CreateNuGetPackage( ngmLocation ) ) )
          {
             GlobalConfiguration = (GlobalNuGetConfiguration) element.Element( "GlobalConfiguration" ).CreateNuGetConfiguration( true, ngmLocation )
          };

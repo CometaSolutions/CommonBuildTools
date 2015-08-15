@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- This .targets file exposes task to call NuGet executable, and download it before that, if the file is not present.
+       The path to NuGet executable should be specified in NuGetExecutable property.
+       If no such property is declared or if it is empty, the NuGet.exe will be assumed to be in same directory with this file. -->
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NuGetTaskCall"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NuGetTaskCall"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <NuGetExecutable ParameterType="System.String" Required="False" />
+      <NuGetArguments ParameterType="System.String" Required="True" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Xml" />
+      <Reference Include="System.Xml.Linq" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/NuGetRelated.cs" />
+    </Task>
+  </UsingTask>
+  
+  <!-- NuGet works fine in VS but on most build servers the building is done through command line, and if build is done from clean repository, the NuGet packages need to be restored. -->
+  <!-- This .targets file exposes task to restore NuGet packages based on custom configuration file. -->
+  <!-- The file name should be in NuGetManagementFile property.
+       Alternatively, the file contents should be in NuGetManagementContents property.
+       Is neither is specified, then the task fails with error. -->
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NuGetTaskRestore"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NuGetTaskRestore"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <NuGetExecutable ParameterType="System.String" Required="False" />
+      <NuGetManagementFile ParameterType="System.String" Required="False" />
+      <NuGetManagementContents ParameterType="System.String" Required="False" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Xml" />
+      <Reference Include="System.Xml.Linq" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/NuGetRelated.cs" />
+    </Task>
+  </UsingTask>
+  
+  <!-- This .targets file exposes NuGetTaskNuSpec task, which will generate a .nuspec file according to the given properties -->
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NuGetTaskNuSpec"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NuGetTaskNuSpec"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <VersionFile ParameterType="System.String" Required="False" />
+      <VersionContents ParameterType="System.String" Required="False" />
+      <Copyright_InceptionYear ParameterType="System.Int32" Required="False" />
+      <Copyright ParameterType="System.String" Required="False" />
+      <PackageID ParameterType="System.String" Required="True" />
+      <Authors ParameterType="System.String" Required="True" />
+      <Description ParameterType="System.String" Required="True" />
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="True" />
+      <OutputPath ParameterType="System.String" Required="False" />
+      <OutputDirectory ParameterType="System.String" Required="False" />
+      <Title ParameterType="System.String" Required="False" />
+      <Owners ParameterType="System.String" Required="False" />
+      <ReleaseNotes ParameterType="System.String" Required="False" />
+      <Tags ParameterType="System.String" Required="False" />
+      <Summary ParameterType="System.String" Required="False" />
+      <Language ParameterType="System.String" Required="False" />
+      <ProjectURL ParameterType="System.String" Required="False" />
+      <IconURL ParameterType="System.String" Required="False" />
+      <LicenseURL ParameterType="System.String" Required="False" />
+      <RequireLicenseAcceptance ParameterType="System.Boolean" Required="False" />
+      <DevelopmentDependency ParameterType="System.Boolean" Required="False" />
+      <Dependencies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="False" />
+      <FrameworkAssemblies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="False" />
+      
+      <GeneratedNuSpecFilePath ParameterType="System.String" Output="True" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Xml" />
+      <Reference Include="System.Xml.Linq" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/NuGetRelated.cs" />
+    </Task>
+  </UsingTask>
+  
+  <!-- This .targets file exposes task to generate .nupkg file. -->
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NuGetTaskPackage"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NuGetTaskPackage"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <NuGetExecutable ParameterType="System.String" Required="False" />
+      <NuSpecFile ParameterType="System.String" Required="True" />
+      <OutputDirectory ParameterType="System.String" Required="False" />
+      <BasePath ParameterType="System.String" Required="False" />
+      <Version ParameterType="System.String" Required="False" />
+      <MinClientVersion ParameterType="System.String" Required="False" />
+      <NoDefaultExcludes ParameterType="System.Boolean" Required="False" />
+      <NoPackageAnalysis ParameterType="System.Boolean" Required="False" />
+      <ExcludeEmptyDirectories ParameterType="System.Boolean" Required="False" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Xml" />
+      <Reference Include="System.Xml.Linq" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/NuGetRelated.cs" />
+    </Task>
+  </UsingTask>
+  
+  <!-- This .targets file exposes task to push .nupkg file. -->
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NuGetTaskPush"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NuGetTaskPush"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <NuGetExecutable ParameterType="System.String" Required="False" />
+      <PackageFilePath ParameterType="System.String" Required="True" />
+      <Source ParameterType="System.String" Required="False" />
+      <Timeout ParameterType="System.Int32" Required="False" />
+      <ConfigFile ParameterType="System.String" Required="False" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Xml" />
+      <Reference Include="System.Xml.Linq" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/NuGetRelated.cs" />
+    </Task>
+  </UsingTask>
+</Project>

@@ -65,7 +65,7 @@ namespace CommonBuildTools
       }
    }
 
-   public abstract class AbstractNuGetTask : ToolTask
+   public abstract class NuGetTask : ToolTask
    {
       public String NuGetExecutable { get; set; }
 
@@ -114,7 +114,7 @@ namespace CommonBuildTools
       }
    }
 
-   public class CallNuGetExecutableTask : AbstractNuGetTask
+   public class NuGetTaskCall : NuGetTask
    {
       public String NuGetArguments { get; set; }
 
@@ -124,7 +124,7 @@ namespace CommonBuildTools
       }
    }
 
-   public class NuGetRestoreTask : AbstractNuGetTask
+   public class NuGetTaskRestore : NuGetTask
    {
       public String NuGetManagementFile { get; set; }
       public String NuGetManagementContents { get; set; }
@@ -529,7 +529,7 @@ namespace CommonBuildTools
       }
    }
 
-   public class GenerateNuSpecFileTask : Task
+   public class NuGetTaskNuSpec : Task
    {
       private const String ITEM_MD_TARGET_PATH = "TargetFilePath";
       private const String ITEM_MD_TARGET_FW = "TargetFramework";
@@ -871,7 +871,7 @@ namespace CommonBuildTools
       }
    }
 
-   public class GenerateNuGetPackageFileTask : AbstractNuGetTask
+   public class NuGetTaskPackage : NuGetTask
    {
 
       [Required]
@@ -920,6 +920,52 @@ namespace CommonBuildTools
          {
             builder.AppendSwitch( "-ExcludeEmptyDirectories " );
          }
+
+         builder.AppendTextUnquoted( " -Verbosity detailed -NonInteractive" );
+
+         return builder.ToString();
+      }
+   }
+
+   public class NuGetTaskPush : NuGetTask
+   {
+      private Int32? _nullable_TO;
+
+      [Required]
+      public String PackageFilePath { get; set; }
+
+      public String APIKey { get; set; }
+      public String Source { get; set; }
+      public Int32 Timeout
+      {
+         get
+         {
+            return this._nullable_TO ?? 0;
+         }
+         set
+         {
+            this._nullable_TO = value;
+         }
+      }
+      public String ConfigFile { get; set; }
+
+      protected override String GenerateCommandLineCommands()
+      {
+         var builder = new CommandLineBuilder();
+
+         builder.AppendTextUnquoted( "push " );
+         builder.AppendFileNameIfNotNull( this.PackageFilePath );
+
+         builder.AppendFileNameIfNotNull( this.APIKey );
+
+         builder.AppendSwitchIfNotNull( "-Source ", this.Source );
+         var to = this._nullable_TO;
+         if ( to.HasValue )
+         {
+            builder.AppendSwitchIfNotNull( "-Timeout ", to.Value.ToString() );
+         }
+
+         builder.AppendSwitchIfNotNull( "-ConfigFile ", this.ConfigFile );
 
          builder.AppendTextUnquoted( " -Verbosity detailed -NonInteractive" );
 

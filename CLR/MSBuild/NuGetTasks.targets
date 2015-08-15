@@ -141,6 +141,7 @@
     <ParameterGroup>
       <NuGetExecutable ParameterType="System.String" Required="False" />
       <PackageFilePath ParameterType="System.String" Required="True" />
+      <APIKey ParameterType="System.String" Required="False" />
       <Source ParameterType="System.String" Required="False" />
       <Timeout ParameterType="System.Int32" Required="False" />
       <ConfigFile ParameterType="System.String" Required="False" />

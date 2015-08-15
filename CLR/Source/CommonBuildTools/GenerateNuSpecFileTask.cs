@@ -140,6 +140,11 @@ namespace CommonBuildTools
             this.AddFiles( nuspec );
 
             // Save
+            var outDir = Path.GetDirectoryName( outputPath );
+            if ( !Directory.Exists( outDir ) )
+            {
+               Directory.CreateDirectory( outDir );
+            }
 
             new XDocument( new XDeclaration( "1.0", "utf-8", "yes" ), nuspec )
                .Save( outputPath );

@@ -96,6 +96,11 @@ namespace CommonBuildTools
             }
          }
 
+         if ( String.IsNullOrEmpty( filePath ) )
+         {
+            this.Log.LogError( "Failed to find NUnit executable." );
+         }
+
          return filePath;
       }
 

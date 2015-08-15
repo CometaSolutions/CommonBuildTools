@@ -19,7 +19,9 @@
       <NuGetArguments ParameterType="System.String" Required="True" />
     </ParameterGroup>
     <Task>
-      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/CallNuGetExecutableTask.cs" />
+      <Reference Include="System.Xml" />
+      <Reference Include="System.Xml.Linq" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/NuGetRelated.cs" />
     </Task>
   </UsingTask>
 </Project>

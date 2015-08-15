@@ -1,56 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- NuGet works fine in VS but on most build servers the building is done through command line, and if build is done from clean repository, the NuGet packages need to be restored. -->
-  <!-- This .targets file exposes target to restore NuGet packages based on custom configuration file. -->
+  <!-- This .targets file exposes task to restore NuGet packages based on custom configuration file. -->
   <!-- The file name should be in NuGetManagementFile property.
        Alternatively, the file contents should be in NuGetManagementContents property.
-       Is neither is specified, then the target fails with error. -->
+       Is neither is specified, then the task fails with error. -->
   
-  <!-- Import the CallNuGetExecutableTask task -->
-  <Import Project="$(MSBuildThisFileDirectory)CallNuGetExecutable.targets" />
-  
-  <!-- Task to generate package.config files and NuGet restore command line arguments -->
   <UsingTask
     Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
-    TaskName="CommonBuildTools.CreateNuGetPackagesFilesTask"
+    TaskName="CommonBuildTools.NuGetRestoreTask"
     AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
     />
   <UsingTask
     Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
-    TaskName="CommonBuildTools.CreateNuGetPackagesFilesTask"
+    TaskName="CommonBuildTools.NuGetRestoreTask"
     AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
     TaskFactory="CodeTaskFactory">
     <ParameterGroup>
+      <NuGetExecutable ParameterType="System.String" Required="False" />
       <NuGetManagementFile ParameterType="System.String" Required="False" />
       <NuGetManagementContents ParameterType="System.String" Required="False" />
-      <NuGetPackagesFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="True" />
     </ParameterGroup>
     <Task>
-      <Reference Include="System.Core" />
-      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/CreateNuGetPackagesFilesTask.cs" />
+      <Reference Include="System.Xml" />
+      <Reference Include="System.Xml.Linq" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/NuGetRelated.cs" />
     </Task>
   </UsingTask>
-
-  <Target Name="RestoreNuGetPackages">
-    <!-- Generate NuGet package files (use ErrorAndContinue in order to delete generated files) -->
-    <CommonBuildTools.CreateNuGetPackagesFilesTask
-      NuGetManagementFile="$(NuGetManagementFile)"
-      NuGetManagementContents="$(NuGetManagementContents)"
-      >
-      <Output TaskParameter="NuGetPackagesConfigFiles" ItemName="NuGetPackagesConfigFiles" />
-    </CommonBuildTools.CreateNuGetPackagesFilesTask>
-    
-    <!-- For each package file, run NuGet -->
-    <CommonBuildTools.CallNuGetExecutableTask
-      NuGetExecutable="$(NuGetRestore_NuGetExe)"
-      NuGetArguments="restore %(NuGetPackagesConfigFiles->NuGetParameters)"
-      ContinueOnError="ErrorAndContinue"
-      />
-    
-    <!-- Delete generated packages.config files -->
-    <Delete
-      Files="@(NuGetPackagesConfigFiles)"
-      ContinueOnError="WarnAndContinue"
-      />
-  </Target>
 </Project>

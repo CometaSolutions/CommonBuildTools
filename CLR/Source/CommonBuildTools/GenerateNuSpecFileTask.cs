@@ -34,12 +34,27 @@ namespace CommonBuildTools
       private const String ITEM_MD_VERSION = "Version";
       private const String ITEM_MD_EXCLUDE = "Exclude";
 
+      // MSBuild doesn't support nullable stuff...
+      private Int32? _nullable_CIY;
+      private Boolean? _nullable_RLA;
+      private Boolean? _nullable_DD;
+
       // One of these should be specified
       public String VersionFile { get; set; }
       public String VersionContents { get; set; }
 
       // If Copyright is null or empty, and this is specified, then automatic copyright is generated
-      public Int32? Copyright_InceptionYear { get; set; }
+      public Int32 Copyright_InceptionYear
+      {
+         get
+         {
+            return this._nullable_CIY ?? 0;
+         }
+         set
+         {
+            this._nullable_CIY = value;
+         }
+      }
       public String Copyright { get; set; }
 
       [Required]
@@ -64,8 +79,28 @@ namespace CommonBuildTools
       public String ProjectURL { get; set; }
       public String IconURL { get; set; }
       public String LicenseURL { get; set; }
-      public Boolean? RequireLicenseAcceptance { get; set; }
-      public Boolean? DevelopmentDependency { get; set; }
+      public Boolean RequireLicenseAcceptance
+      {
+         get
+         {
+            return this._nullable_RLA ?? false;
+         }
+         set
+         {
+            this._nullable_RLA = value;
+         }
+      }
+      public Boolean DevelopmentDependency
+      {
+         get
+         {
+            return this._nullable_DD ?? false;
+         }
+         set
+         {
+            this._nullable_DD = value;
+         }
+      }
       public ITaskItem[] Dependencies { get; set; }
       public ITaskItem[] FrameworkAssemblies { get; set; }
 
@@ -124,9 +159,9 @@ namespace CommonBuildTools
             AddElementIfPresent( md, "iconUrl", this.IconURL );
             AddElementIfPresent( md, "licenseUrl", this.LicenseURL );
             AddElementIfPresent( md, "copyright", this.ConstructCopyright() );
-            AddElementIfPresent( md, "requireLicenseAcceptance", this.RequireLicenseAcceptance );
+            AddElementIfPresent( md, "requireLicenseAcceptance", this._nullable_RLA );
             AddElementIfPresent( md, "tags", this.Tags );
-            AddElementIfPresent( md, "developmentDependency", this.DevelopmentDependency );
+            AddElementIfPresent( md, "developmentDependency", this._nullable_DD );
 
             this.AddDependencies( md );
             this.AddReferences( md );
@@ -169,7 +204,7 @@ namespace CommonBuildTools
       private String ConstructCopyright()
       {
          var cr = this.Copyright;
-         var inceptionNullable = this.Copyright_InceptionYear;
+         var inceptionNullable = this._nullable_CIY;
          if ( String.IsNullOrEmpty( cr ) && inceptionNullable.HasValue )
          {
             var inception = inceptionNullable.Value;

@@ -15,7 +15,7 @@
     <ParameterGroup>
       <VersionFile ParameterType="System.String" Required="False" />
       <VersionContents ParameterType="System.String" Required="False" />
-      <Copyright_InceptionYear ParameterType="System.Int32?" Required="False" />
+      <Copyright_InceptionYear ParameterType="System.Int32" Required="False" />
       <Copyright ParameterType="System.String" Required="False" />
       <PackageID ParameterType="System.String" Required="True" />
       <Authors ParameterType="System.String" Required="True" />
@@ -32,8 +32,8 @@
       <ProjectURL ParameterType="System.String" Required="False" />
       <IconURL ParameterType="System.String" Required="False" />
       <LicenseURL ParameterType="System.String" Required="False" />
-      <RequireLicenseAcceptance ParameterType="System.Boolean?" Required="False" />
-      <DevelopmentDependency ParameterType="System.Boolean?" Required="False" />
+      <RequireLicenseAcceptance ParameterType="System.Boolean" Required="False" />
+      <DevelopmentDependency ParameterType="System.Boolean" Required="False" />
       <Dependencies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="False" />
       <FrameworkAssemblies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="False" />
     </ParameterGroup>

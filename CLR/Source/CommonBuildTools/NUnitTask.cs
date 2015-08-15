@@ -176,5 +176,14 @@ namespace CommonBuildTools
          return cmd.ToString();
 
       }
+
+      protected override MessageImportance StandardOutputLoggingImportance
+      {
+         get
+         {
+            return MessageImportance.Normal;
+         }
+      }
+
    }
 }

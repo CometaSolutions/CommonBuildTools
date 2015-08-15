@@ -104,6 +104,14 @@ namespace CommonBuildTools
       }
 
       protected override abstract String GenerateCommandLineCommands();
+
+      protected override MessageImportance StandardOutputLoggingImportance
+      {
+         get
+         {
+            return MessageImportance.Normal;
+         }
+      }
    }
 
    public class CallNuGetExecutableTask : AbstractNuGetTask

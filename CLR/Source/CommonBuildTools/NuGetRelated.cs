@@ -666,21 +666,21 @@ namespace CommonBuildTools
             this.AddTargetFWAssemblies( md );
 
             // Top-level element
-            var nuspec = new XElement( "package", md );
+            XNamespace ns = "http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd";
+            var nuspec = new XElement( ns + "package", md );
 
             // Files
             this.AddFiles( nuspec );
 
             // Change namespace of all elements and attributes
-            XNamespace ns = "http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd";
             foreach ( var el in nuspec.XPathSelectElements( "//*" ).ToArray() )
             {
                el.Name = ns + el.Name.LocalName;
-               foreach ( var attr in el.Attributes().ToArray() )
-               {
-                  el.SetAttributeValue( attr.Name, null );
-                  el.SetAttributeValue( ns + attr.Name.LocalName, attr.Value );
-               }
+               //foreach ( var attr in el.Attributes().ToArray() )
+               //{
+               //   el.SetAttributeValue( attr.Name, null );
+               //   el.SetAttributeValue( ns + attr.Name.LocalName, attr.Value );
+               //}
             }
 
             // Save

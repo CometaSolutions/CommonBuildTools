@@ -609,6 +609,8 @@ namespace CommonBuildTools
 
       [Output]
       public String GeneratedNuSpecFilePath { get; set; }
+      [Output]
+      public String GeneratedNuSpecVersion { get; set; }
 
       public override Boolean Execute()
       {
@@ -702,6 +704,7 @@ namespace CommonBuildTools
                .Save( outputPath );
 
             this.GeneratedNuSpecFilePath = outputPath;
+            this.GeneratedNuSpecVersion = version;
          }
          else
          {

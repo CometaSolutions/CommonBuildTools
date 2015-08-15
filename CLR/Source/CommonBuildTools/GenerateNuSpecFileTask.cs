@@ -50,8 +50,10 @@ namespace CommonBuildTools
       public String Description { get; set; }
       [Required]
       public ITaskItem[] Files { get; set; }
-      [Required]
+
+      // One of these should be specified
       public String OutputPath { get; set; }
+      public String OutputDirectory { get; set; }
 
       public String Title { get; set; }
       public String Owners { get; set; }
@@ -86,11 +88,25 @@ namespace CommonBuildTools
          var id = this.CheckMandatoryContent( "id", this.PackageID );
          var authors = this.CheckMandatoryContent( "authors", this.Authors );
          var description = this.CheckMandatoryContent( "description", this.Description );
+         var outputPath = this.OutputPath;
+         if ( String.IsNullOrEmpty( outputPath ) && !String.IsNullOrEmpty( id ) )
+         {
+            var outDir = this.OutputDirectory;
+            if ( String.IsNullOrEmpty( outDir ) )
+            {
+               this.Log.LogError( "Either output file, or output directory should be specified." );
+            }
+            else
+            {
+               outputPath = Path.Combine( outDir, id + ".nuspec" );
+            }
+         }
 
          var retVal = !String.IsNullOrEmpty( version )
             && !String.IsNullOrEmpty( id )
             && !String.IsNullOrEmpty( authors )
-            && !String.IsNullOrEmpty( description );
+            && !String.IsNullOrEmpty( description )
+            && !String.IsNullOrEmpty( outputPath );
          if ( retVal )
          {
             // Metadata
@@ -124,8 +140,13 @@ namespace CommonBuildTools
             this.AddFiles( nuspec );
 
             // Save
+
             new XDocument( new XDeclaration( "1.0", "utf-8", "yes" ), nuspec )
-               .Save( this.OutputPath );
+               .Save( outputPath );
+         }
+         else
+         {
+            this.Log.LogError( "One or more of the required parameters was not specified." );
          }
 
          return retVal;

@@ -21,7 +21,8 @@
       <Authors ParameterType="System.String" Required="True" />
       <Description ParameterType="System.String" Required="True" />
       <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="True" />
-      <OutputPath ParameterType="System.String" Required="True" />
+      <OutputPath ParameterType="System.String" Required="False" />
+      <OutputDirectory ParameterType="System.String" Required="False" />
       <Title ParameterType="System.String" Required="False" />
       <Owners ParameterType="System.String" Required="False" />
       <ReleaseNotes ParameterType="System.String" Required="False" />

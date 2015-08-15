@@ -33,6 +33,7 @@ namespace CommonBuildTools
       // Newest at the moment
       private const String DEFAULT_NUNIT_VERSION = "2.6.4";
 
+      [Required]
       public ITaskItem[] Assemblies { get; set; }
 
       public String ConfigurationFile { get; set; }

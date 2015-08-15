@@ -1,87 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- This .targets file exposes GenerateNuSpecFile target, which will generate a .nuspec file according to the properties (NuSpec_{Property}) -->
+  <!-- This .targets file exposes GenerateNuSpecFileTask task, which will generate a .nuspec file according to the given properties -->
   
-  <Target Name="GenerateNuSpecFile">
-    <!-- Read version information from file, if needed -->
-	<ReadLinesFromFile Condition="'$(NuSpec_VersionFilename)' != ''" File="$(NuSpec_VersionFilename)">
-      <Output TaskParameter="Lines"
-        ItemName="NuSpec_VersionItem" />
-    </ReadLinesFromFile>
-    <PropertyGroup Condition="'$(NuSpec_VersionFilename)' != ''">
-	    <NuSpec_Version>%(NuSpec_VersionItem.Identity)</NuSpec_Version>
-	</PropertyGroup>
-    
-    <!-- Setup copyright text, if specified -->
-    <PropertyGroup Condition=" '$(NuSpec_Copyright)' == '' and '$(NuSpec_AutoCopyright)' != '' and '$(NuSpec_CopyrightInceptionYear)' != ''">
-      <NuSpec_CopyrightCurrentYear>$([System.DateTime]::Now.Year)</NuSpec_CopyrightCurrentYear>
-      <NuSpec_Copyright>Copyright $(NuSpec_CopyrightInceptionYear)</NuSpec_Copyright>
-      <NuSpec_Copyright Condition=" '$(NuSpec_CopyrightInceptionYear)' !=  '$(NuSpec_CopyrightCurrentYear)' ">$(NuSpec_Copyright)-$(NuSpec_CopyrightCurrentYear)</NuSpec_Copyright>
-      <NuSpec_Copyright>$(NuSpec_Copyright), $(NuSpec_Authors). All rights reserved.</NuSpec_Copyright>
-    </PropertyGroup>
-  
-    <!-- Check for required properties -->
-    <Error Condition=" '$(NuSpec_OutputPath)' == '' " Text="NuSpec output path must be non-empty" />
-    <Error Condition=" '$(NuSpec_ID)' == '' " Text="NuSpec package ID must be non-empty" />
-    <Error Condition=" '$(NuSpec_Version)' == '' " Text="NuSpec package version must be non-empty" />
-    <Error Condition=" '$(NuSpec_Authors)' == '' " Text="NuSpec package authors must be non-empty" />
-    <Error Condition=" '$(NuSpec_Description)' == '' " Text="NuSpec package description must be non-empty" />
-    
-    <!-- Build Parameters -->
-    <PropertyGroup>
-      <NuSpec_XMLContent><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-  <metadata>
-    <id>$(NuSpec_ID)</id>
-    <version>$(NuSpec_Version)$(NuSpec_Version_Suffix)</version>
-    <title>$(NuSpec_Title)</title>
-    <authors>$(NuSpec_Authors)</authors>
-    <owners>$(NuSpec_Owners)</owners>
-    <description>$(NuSpec_Description)</description>
-    <releaseNotes>$(NuSpec_ReleaseNotes)</releaseNotes>
-    <tags>$(NuSpec_Tags)</tags>
-    <summary>$(NuSpec_Summary)</summary>]]></NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_Language)' != '' ">$(NuSpec_XMLContent)
-    &lt;language&gt;$(NuSpec_Language)&lt;/language&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_ProjectURL)' != '' ">$(NuSpec_XMLContent)
-    &lt;projectUrl&gt;$(NuSpec_ProjectURL)&lt;/projectUrl&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_IconURL)' != '' ">$(NuSpec_XMLContent)
-    &lt;iconUrl&gt;$(NuSpec_IconURL)&lt;/iconUrl&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_LicenseURL)' != '' ">$(NuSpec_XMLContent)
-    &lt;licenseUrl&gt;$(NuSpec_LicenseURL)&lt;/licenseUrl&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_Copyright)' != '' ">$(NuSpec_XMLContent)
-    &lt;copyright&gt;$(NuSpec_Copyright)&lt;/copyright&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_RequireLicenseAcceptance)' != '' ">$(NuSpec_XMLContent)
-    &lt;requireLicenseAcceptance&gt;$(NuSpec_RequireLicenseAcceptance)&lt;/requireLicenseAcceptance&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_DevelopmentDependency)' != '' ">$(NuSpec_XMLContent)
-    &lt;developmentDependency&gt;$(NuSpec_DevelopmentDependency)&lt;/developmentDependency&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_ReferencesXML)' != '' ">$(NuSpec_XMLContent)
-    &lt;references&gt;$(NuSpec_ReferencesXML)&lt;/references&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_DependenciesXML)' != '' ">$(NuSpec_XMLContent)
-    &lt;dependencies&gt;$(NuSpec_DependenciesXML)&lt;/dependencies&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent Condition=" '$(NuSpec_FrameworkAssembliesXML)' != '' ">$(NuSpec_XMLContent)
-    &lt;frameworkAssemblies&gt;$(NuSpec_FrameworkAssembliesXML)&lt;/frameworkAssemblies&gt;</NuSpec_XMLContent>
-      <NuSpec_XMLContent><![CDATA[$(NuSpec_XMLContent)
-  </metadata>
-  <files>
-    $(NuSpec_FilesXML)
-  </files>
-</package>
-      ]]></NuSpec_XMLContent>
-    </PropertyGroup>
-    
-    <!-- Check for directory existence (WriteLinesToFile task fails if directory doesn't exist...) -->
-    <PropertyGroup>
-      <NuSpec_OutputPathDir>$([System.IO.Path]::GetDirectoryName($(NuSpec_OutputPath)))</NuSpec_OutputPathDir>
-    </PropertyGroup>
-    <MakeDir Condition="!Exists($(NuSpec_OutputPathDir))" Directories="$(NuSpec_OutputPathDir)" />
-    
-    <!-- Write xml to file -->
-    <WriteLinesToFile
-      File="$(NuSpec_OutputPath)"
-      Lines="$(NuSpec_XMLContent)"
-      Overwrite="true"
-      Encoding="utf-8"
-      />
-  </Target>
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.GenerateNuSpecFileTask"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.GenerateNuSpecFileTask"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <VersionFile ParameterType="System.String" Required="False" />
+      <VersionContents ParameterType="System.String" Required="False" />
+      <Copyright_InceptionYear ParameterType="System.Int32?" Required="False" />
+      <Copyright ParameterType="System.String" Required="False" />
+      <PackageID ParameterType="System.String" Required="True" />
+      <Authors ParameterType="System.String" Required="True" />
+      <Description ParameterType="System.String" Required="True" />
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="True" />
+      <OutputPath ParameterType="System.String" Required="True" />
+      <Title ParameterType="System.String" Required="False" />
+      <Owners ParameterType="System.String" Required="False" />
+      <ReleaseNotes ParameterType="System.String" Required="False" />
+      <Tags ParameterType="System.String" Required="False" />
+      <Summary ParameterType="System.String" Required="False" />
+      <Language ParameterType="System.String" Required="False" />
+      <ProjectURL ParameterType="System.String" Required="False" />
+      <IconURL ParameterType="System.String" Required="False" />
+      <LicenseURL ParameterType="System.String" Required="False" />
+      <RequireLicenseAcceptance ParameterType="System.Boolean?" Required="False" />
+      <DevelopmentDependency ParameterType="System.Boolean?" Required="False" />
+      <Dependencies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="False" />
+      <FrameworkAssemblies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="False" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Xml" />
+      <Reference Include="System.Xml.Linq" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/GenerateNuSpecFileTask.cs" />
+    </Task>
+  </UsingTask>
 </Project>

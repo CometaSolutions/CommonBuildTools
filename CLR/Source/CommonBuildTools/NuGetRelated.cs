@@ -706,23 +706,23 @@ internal static partial class E_CBT
       return cmd.ToString();
    }
 
-   private static Boolean ParseAsBooleanSafe( this String str )
+   internal static Boolean ParseAsBooleanSafe( this String str )
    {
       Boolean parsedBoolean;
       return Boolean.TryParse( str, out parsedBoolean ) && parsedBoolean;
    }
 
-   private static String NullIfEmpty( this String str )
+   internal static String NullIfEmpty( this String str )
    {
       return str != null && str.Length == 0 ? null : str;
    }
 
-   private static T[] NullIfEmpty<T>( this T[] array )
+   internal static T[] NullIfEmpty<T>( this T[] array )
    {
       return array != null && array.Length == 0 ? null : array;
    }
 
-   private static String ConvertRelativeToAbsolute( this String str, String ngmLocation )
+   internal static String ConvertRelativeToAbsolute( this String str, String ngmLocation )
    {
       if ( !String.IsNullOrEmpty( str ) && !Path.IsPathRooted( str ) )
       {

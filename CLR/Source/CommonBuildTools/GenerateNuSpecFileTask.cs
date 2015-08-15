@@ -28,7 +28,7 @@ namespace CommonBuildTools
 {
    public class GenerateNuSpecFileTask : Task
    {
-      private const String ITEM_MD_TARGET_PATH = "Target";
+      private const String ITEM_MD_TARGET_PATH = "TargetFilePath";
       private const String ITEM_MD_TARGET_FW = "TargetFramework";
       private const String ITEM_MD_EXPLICIT_REF = "ExplicitReference";
       private const String ITEM_MD_VERSION = "Version";

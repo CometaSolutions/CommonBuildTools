@@ -187,6 +187,7 @@ namespace CommonBuildTools
                         try
                         {
                            File.Delete( file );
+                           Directory.Delete( Path.GetDirectoryName( file ) );
                         }
                         catch ( Exception exc )
                         {
@@ -293,7 +294,7 @@ namespace CommonBuildTools
                var key = g.Key;
                var info = new PackagesFileInfo(
                   key.Item1,
-                  Path.Combine( Path.GetTempPath(), Guid.NewGuid().ToString() + ".config" ),
+                  Path.Combine( Path.GetTempPath(), Guid.NewGuid().ToString(), "packages.config" ),
                   key.Item2,
                   key.Item3
                   );
@@ -314,6 +315,11 @@ namespace CommonBuildTools
 
             try
             {
+               var dir = Path.GetDirectoryName( curFile );
+               if ( !Directory.Exists( dir ) )
+               {
+                  Directory.CreateDirectory( dir );
+               }
                new XDocument(
                   new XDeclaration( "1.0", "utf-8", "yes" ),
                   new XElement( "packages", cfg.Packages.Select( pkg =>

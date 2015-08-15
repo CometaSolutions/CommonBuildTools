@@ -1,32 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- This .targets file exposes target to generate .nupkg file.
-       The path to NuGet executable should be specified in NuGetPack_NuGetExe property.
-       If no such property is declared or if it is empty, the NuGet.exe will be assumed to be in same directory with this file.
-       The path to NuSpec file should be specified in NuGetPack_NuSpec property.
-       -->
+  <!-- This .targets file exposes task to generate .nupkg file. -->
   
-  <!-- Import the CallNuGetExecutableTask task -->
-  <Import Project="$(MSBuildThisFileDirectory)CallNuGetExecutable.targets" />
-  
-  <Target Name="GenerateNuGetPackage">
-    <Error Condition=" '$(NuGetPack_NuSpec)' == '' " Text="A path to NuSpec file must be specified." />
-    <Error Condition="!Exists('$(NuGetPack_NuSpec)')" Text="NuSpec file $(NuGetPack_NuSpec) does not exist." />
-    
-    <!-- Build arguments for NuGet pack command -->
-    <PropertyGroup>
-      <NuGetPack_Args>pack &quot;$(NuGetPack_NuSpec)&quot;</NuGetPack_Args>
-      <NuGetPack_Args Condition=" '$(NuGetPack_OutputDirectory)' != '' ">$(NuGetPack_Args) -OutputDirectory &quot;$(NuGetPack_OutputDirectory)&quot;</NuGetPack_Args>
-      <NuGetPack_Args Condition=" '$(NuGetPack_BasePath)' != '' ">$(NuGetPack_Args) -BasePath &quot;$(NuGetPack_BasePath)&quot;</NuGetPack_Args>
-      <NuGetPack_Args Condition=" '$(NuGetPack_Version)' != '' ">$(NuGetPack_Args) -Version &quot;$(NuGetPack_Version)&quot;</NuGetPack_Args>
-      <NuGetPack_Args Condition=" '$(NuGetPack_ExcludeEmptyDirectories)' != '' ">$(NuGetPack_Args) -ExcludeEmptyDirectories</NuGetPack_Args>
-      <NuGetPack_Args Condition=" '$(NuGetPack_MinClientVersion)' != '' ">$(NuGetPack_Args) -MinClientVersion &quot;$(NuGetPack_MinClientVersion)&quot;</NuGetPack_Args>
-      <NuGetPack_Args>$(NuGetPack_Args) -Verbosity detailed -NonInteractive</NuGetPack_Args>
-    </PropertyGroup>
-    
-    <CommonBuildTools.CallNuGetExecutableTask
-      NuGetExecutable="$(NuGetPack_NuGetExe)"
-      NuGetArguments="$(NuGetPack_Args)"
-      />
-  </Target>
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.GenerateNuGetPackageFileTask"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.GenerateNuGetPackageFileTask"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <NuSpecFile ParameterType="System.String" Required="True" />
+      <OutputDirectory ParameterType="System.String" Required="False" />
+      <BasePath ParameterType="System.String" Required="False" />
+      <Version ParameterType="System.String" Required="False" />
+      <MinClientVersion ParameterType="System.String" Required="False" />
+      <ExcludeEmptyDirectories ParameterType="System.Boolean" Required="False" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Xml" />
+      <Reference Include="System.Xml.Linq" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/NuGetRelated.cs" />
+    </Task>
+  </UsingTask>
 </Project>

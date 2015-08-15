@@ -845,6 +845,48 @@ namespace CommonBuildTools
          }
       }
    }
+
+   public class GenerateNuGetPackageFileTask : AbstractNuGetTask
+   {
+
+      [Required]
+      public String NuSpecFile { get; set; }
+
+      public String OutputDirectory { get; set; }
+
+      public String BasePath { get; set; }
+
+      public String Version { get; set; }
+
+      public String MinClientVersion { get; set; }
+
+      public Boolean ExcludeEmptyDirectories { get; set; }
+
+      protected override String GenerateCommandLineCommands()
+      {
+         var builder = new CommandLineBuilder();
+         builder.AppendTextUnquoted( "pack " );
+
+         builder.AppendFileNameIfNotNull( this.NuSpecFile );
+
+         builder.AppendSwitchIfNotNull( "-OutputDirectory ", this.OutputDirectory );
+
+         builder.AppendSwitchIfNotNull( "-BasePath ", this.BasePath );
+
+         builder.AppendSwitchIfNotNull( "-Version ", this.Version );
+
+         builder.AppendSwitchIfNotNull( "-MinClientVersion ", this.MinClientVersion );
+
+         if ( this.ExcludeEmptyDirectories )
+         {
+            builder.AppendSwitch( "-ExcludeEmptyDirectories " );
+         }
+
+         builder.AppendTextUnquoted( " -Verbosity detailed -NonInteractive" );
+
+         return builder.ToString();
+      }
+   }
 }
 
 internal static partial class E_CBT

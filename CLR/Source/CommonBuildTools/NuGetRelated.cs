@@ -145,29 +145,36 @@ namespace CommonBuildTools
          var retVal = false;
          // First, deduce how many packages.config files we need to create
          var infos = this.CreatePackagesFileInfos( out this._nugetManagement );
-         if ( infos != null
-            && infos.Count > 0
-            && this.CreatePackageConfigFiles( infos )
-            )
+         if ( infos != null )
          {
             // Then execute NuGet restore for each packages.config file
             var seenError = false;
-            foreach ( var info in infos )
+
+            if ( infos.Count > 0 )
             {
-               this._currentPackage = info;
-               try
+               if ( this.CreatePackageConfigFiles( infos ) )
                {
-                  if ( !base.Execute() )
+                  foreach ( var info in infos )
                   {
-                     seenError = true;
+                     this._currentPackage = info;
+                     try
+                     {
+                        if ( !base.Execute() )
+                        {
+                           seenError = true;
+                        }
+                     }
+                     catch
+                     {
+                        seenError = true;
+                     }
                   }
                }
-               catch
+               else
                {
                   seenError = true;
                }
             }
-
             retVal = !seenError;
          }
 

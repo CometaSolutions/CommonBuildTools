@@ -94,7 +94,7 @@ namespace CommonBuildTools
 
             if ( !String.IsNullOrEmpty( tmp ) && Directory.Exists( tmp ) )
             {
-               filePath = Path.Combine( tmp, "bin" );
+               filePath = Path.Combine( tmp, "bin", this.ToolName );
             }
          }
 

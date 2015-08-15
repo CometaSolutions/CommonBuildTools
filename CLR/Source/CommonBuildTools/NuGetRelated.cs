@@ -658,20 +658,20 @@ internal static partial class E_CBT
 
       cmd.AppendFileNameIfNotNull( info.PackagesConfigPath );
 
-      cmd.AppendSwitchIfNotNull( "-PackagesDirectory", info.OutputDirectory );
+      cmd.AppendSwitchIfNotNull( "-PackagesDirectory ", info.OutputDirectory );
 
-      cmd.AppendSwitchIfNotNull( "-Source", info.Sources.ToArray().NullIfEmpty(), ";" );
+      cmd.AppendSwitchIfNotNull( "-Source ", info.Sources.ToArray().NullIfEmpty(), ";" );
 
       if ( info.NoCache )
       {
-         cmd.AppendSwitch( "-NoCache" );
+         cmd.AppendSwitch( "-NoCache " );
       }
 
-      cmd.AppendSwitchIfNotNull( "-ConfigFile", info.NuGetConfigPath.NullIfEmpty() );
+      cmd.AppendSwitchIfNotNull( "-ConfigFile ", info.NuGetConfigPath.NullIfEmpty() );
 
       if ( ngm.GlobalConfiguration != null && ngm.GlobalConfiguration.DisableParallelProcessing )
       {
-         cmd.AppendSwitch( "-DisableParallelProcsessing" );
+         cmd.AppendSwitch( "-DisableParallelProcsessing " );
       }
 
       cmd.AppendTextUnquoted( "-Verbosity detailed -NonInteractive" );

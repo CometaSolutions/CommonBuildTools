@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- A task to run NUnit tests. -->
+  
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NUnitTask"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.NUnitTask"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <Assemblies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="True" />
+      <ConfigurationFile ParameterType="System.String" Required="False" />
+      <IncludeCategories ParameterType="System.String" Required="False" />
+      <ExcludeCategories ParameterType="System.String" Required="False" />
+      <StandardOutputFile ParameterType="System.String" Required="False" />
+      <ErrorOutputFile ParameterType="System.String" Required="False" />
+      <Labels ParameterType="System.Boolean" Required="False" />
+      <TestOutputFile ParameterType="System.String" Required="False" />
+      <TestOutputXSLTFile ParameterType="System.String" Required="False" />
+      <NUnitVersion ParameterType="System.String" Required="False" />
+      <NoShadowAssemblies ParameterType="System.Boolean" Required="False" />
+      <RawXMLOutput ParameterType="System.Boolean" Required="False" />
+      <Use32BitProcess ParameterType="System.Boolean" Required="False" />
+    </ParameterGroup>
+    <Task>
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/NUnitTask.cs" />
+    </Task>
+  </UsingTask>
+</Project>

@@ -152,27 +152,48 @@ namespace CommonBuildTools
 
             if ( infos.Count > 0 )
             {
-               if ( this.CreatePackageConfigFiles( infos ) )
+               try
                {
-                  foreach ( var info in infos )
+                  if ( this.CreatePackageConfigFiles( infos ) )
                   {
-                     this._currentPackage = info;
-                     try
+                     foreach ( var info in infos )
                      {
-                        if ( !base.Execute() )
+                        this._currentPackage = info;
+                        try
+                        {
+                           if ( !base.Execute() )
+                           {
+                              seenError = true;
+                           }
+                        }
+                        catch
                         {
                            seenError = true;
                         }
                      }
-                     catch
-                     {
-                        seenError = true;
-                     }
+                  }
+                  else
+                  {
+                     seenError = true;
                   }
                }
-               else
+               finally
                {
-                  seenError = true;
+                  foreach ( var info in infos )
+                  {
+                     var file = info.PackagesConfigPath;
+                     if ( File.Exists( file ) )
+                     {
+                        try
+                        {
+                           File.Delete( file );
+                        }
+                        catch ( Exception exc )
+                        {
+                           this.Log.LogMessage( MessageImportance.Normal, "Failed to delete generated packages.config file {0}: {1}.", file, exc.Message );
+                        }
+                     }
+                  }
                }
             }
             retVal = !seenError;
@@ -563,7 +584,7 @@ internal static partial class E_CBT
    private static String ValueOrNull( this XElement element, String containerName )
    {
       var container = element == null ? null : element.Element( containerName );
-      return container == null ? null : element.Value;
+      return container == null ? null : container.Value;
    }
 
    private static IEnumerable<XElement> ListOrEmpty( this XElement element, String listContainerName, String listItemName )
@@ -674,7 +695,7 @@ internal static partial class E_CBT
          cmd.AppendSwitch( "-DisableParallelProcsessing " );
       }
 
-      cmd.AppendTextUnquoted( "-Verbosity detailed -NonInteractive" );
+      cmd.AppendTextUnquoted( " -Verbosity detailed -NonInteractive" );
 
       return cmd.ToString();
    }

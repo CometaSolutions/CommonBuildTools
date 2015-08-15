@@ -60,6 +60,8 @@ namespace CommonBuildTools
 
       public Boolean Use32BitProcess { get; set; }
 
+      public String WorkingDirectory { get; set; }
+
       protected override String GenerateFullPathToTool()
       {
          var filePath = this.ToolPath;
@@ -121,6 +123,17 @@ namespace CommonBuildTools
 
             return exe;
          }
+      }
+
+      protected override String GetWorkingDirectory()
+      {
+         var retVal = this.WorkingDirectory;
+         if ( String.IsNullOrEmpty( retVal ) )
+         {
+            retVal = base.GetWorkingDirectory();
+         }
+
+         return retVal;
       }
 
       protected override String GenerateCommandLineCommands()

@@ -26,6 +26,7 @@
       <NoShadowAssemblies ParameterType="System.Boolean" Required="False" />
       <RawXMLOutput ParameterType="System.Boolean" Required="False" />
       <Use32BitProcess ParameterType="System.Boolean" Required="False" />
+      <WorkingDirectory ParameterType="System.String" Required="False" />
     </ParameterGroup>
     <Task>
       <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/NUnitTask.cs" />

@@ -40,7 +40,7 @@
     <Task>
       <Reference Include="System.Xml" />
       <Reference Include="System.Xml.Linq" />
-      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/GenerateNuSpecFileTask.cs" />
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/NuGetRelated.cs" />
     </Task>
   </UsingTask>
 </Project>

@@ -150,7 +150,7 @@ namespace CommonBuildTools
             && this.CreatePackageConfigFiles( infos )
             )
          {
-            // Then execute NuGet x times
+            // Then execute NuGet restore for each packages.config file
             var seenError = false;
             foreach ( var info in infos )
             {

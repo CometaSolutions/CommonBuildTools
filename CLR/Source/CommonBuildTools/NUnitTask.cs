@@ -29,7 +29,9 @@ namespace CommonBuildTools
    public class NUnitTask : ToolTask
    {
       private const String REG_KEY = @"HKEY_CURRENT_USER\Software\nunit.org\Nunit\";
-      private const String DEFAULT_NUNIT_VERSION = "2.6.3";
+
+      // Newest at the moment
+      private const String DEFAULT_NUNIT_VERSION = "2.6.4";
 
       public ITaskItem[] Assemblies { get; set; }
 
@@ -67,7 +69,6 @@ namespace CommonBuildTools
             var version = this.NUnitVersion;
             if ( String.IsNullOrEmpty( version ) )
             {
-               // Most common at the moment most likely 2.6.3
                version = DEFAULT_NUNIT_VERSION;
             }
 

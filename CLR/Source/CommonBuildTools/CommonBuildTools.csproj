@@ -45,6 +45,7 @@
     <Compile Include="MergeXMLDocsTask.cs" />
     <Compile Include="NuGetRelated.cs" />
     <Compile Include="NUnitTask.cs" />
+    <Compile Include="PEVerifyTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadVersionFromFileTask.cs" />
     <Compile Include="SelectXMLNodesTask.cs" />

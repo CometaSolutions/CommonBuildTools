@@ -939,7 +939,7 @@ namespace CommonBuildTools
 
       public String APIKey { get; set; }
       public String Source { get; set; }
-      public Int32 Timeout
+      public Int32 PushTimeout
       {
          get
          {

@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- This .targets file exposes PEVerifyFiles target, which will run PEVerify on given files. -->
+  <!-- This .targets file exposes PEVerifyFiles task, which will run PEVerify on given files. -->
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.PEVerifyTask"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.PEVerifyTask"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <FileToVerify ParameterType="System.String" Required="True" />
+      <NoMDVerification ParameterType="System.Boolean" Required="False" />
+      <NoILVerification ParameterType="System.Boolean" Required="False" />
+      <OnlyTransparentMethods ParameterType="System.Boolean" Required="False" />
+      <OnlyUniqueErrors ParameterType="System.Boolean" Required="False" />
+      <NoHResultCodes ParameterType="System.Boolean" Required="False" />
+      <MeasureVerificationTimes ParameterType="System.Boolean" Required="False" />
+      <IgnoreErrorCodes ParameterType="System.String" Required="False" />
+      <IgnoreErrorFile ParameterType="System.String" Required="False" />
+      <Quiet ParameterType="System.Boolean" Required="False" />
+      <NoVerbose ParameterType="System.Boolean" Required="False" />
+      <ShowLogo ParameterType="System.Boolean" Required="False" />
+    </ParameterGroup>
+    <Task>
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/PEVerifyTask.cs" />
+    </Task>
+  </UsingTask>
+  
+  
   <!-- It will run PEVerify for items specified in PEVerifyFiles items -->
   
   <Target Name="PEVerifyFiles">

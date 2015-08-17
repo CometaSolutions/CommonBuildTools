@@ -58,7 +58,6 @@ namespace CommonBuildTools
 "    <!-- Call NUnit task -->\n" +
 "    <CommonBuildTools.NUnitTask\n" +
 "      Assemblies=\"{5}\"\n" +
-"      IncludeCategories=\"{0}\"\n" +
 "      NoShadowAssemblies=\"True\"\n" +
 "      WorkingDirectory=\"$({0}BaseDir)/{4}\"\n" +
 "      />\n" +

@@ -105,7 +105,7 @@ namespace CommonBuildTools
 "    \n" +
 "      <!-- NuGet Spec -->\n" +
 "      <{0}NuSpecVersionFilename Condition=\" '$({0}NuSpecVersion)' == '' \">$({0}BaseDir)/{8}</{0}NuSpecVersionFilename>\n" +
-"      <{0}NuSpecFilePath>$({0}BaseDirNuGet)/{0}.nuspec</{0}NuSpecFilePath>\n" +
+"      <{0}NuSpecFilePath>$({0}BaseDirNuGet)/{24}.nuspec</{0}NuSpecFilePath>\n" +
 "    </PropertyGroup>\n" +
 "    <ItemGroup>\n" +
 "      <{0}NuGetFile Include=\"{6}/{23}.dll\">\n" +
@@ -118,7 +118,7 @@ namespace CommonBuildTools
 "      VersionFile=\"$({0}NuSpecVersionFilename)\"\n" +
 "      VersionContents=\"$({0}NuSpecVersion)\"\n" +
 "      Copyright_InceptionYear=\"{10}\"\n" +
-"      PackageID=\"{0}\"\n" +
+"      PackageID=\"{24}\"\n" +
 "      Authors=\"{11}\"\n" +
 "      Description=\"{12}\"\n" +
 "      Title=\"{13}\"\n" +
@@ -202,6 +202,7 @@ namespace CommonBuildTools
          }
          else
          {
+            var originalPID = pid;
             if ( !this.NoDotReplacementInPackageID )
             {
                pid = pid.Replace( ".", "" );
@@ -243,7 +244,8 @@ namespace CommonBuildTools
                this.PathToNuGetPackageDirectory.ValueOrDefault( "[PATH_TO_NUGET_PACKAGE_DIRECTORY]" ),
                this.NuGetMinClientVersion.ValueOrDefault( "[NUGET_CLIENT_MIN_VERSION]" ),
                this.PathToCommonBuildTools.ValueOrDefault( "[PATH_TO_COMMON_BUILD_TOOLS]" ),
-               this.OutputAssemblyName.ValueOrDefault( pid )
+               this.OutputAssemblyName.ValueOrDefault( pid ),
+               originalPID
                );
 
             var output = this.BuildFileLocation;

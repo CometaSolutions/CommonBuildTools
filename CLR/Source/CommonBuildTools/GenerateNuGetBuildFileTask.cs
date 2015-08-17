@@ -64,7 +64,7 @@ namespace CommonBuildTools
 "  </Target>\n" +
 "  \n" +
 "  <Target Name=\"{0}_Compile\">   \n" +
-"    <MSBuild Projects=\"$(MSBuildThisFileDirectory){0}.build\" Properties=\"{0}Configuration=Release\" />\n" +
+"    <MSBuild Projects=\"$(MSBuildThisFileDirectory){24}.build\" Properties=\"{0}Configuration=Release\" />\n" +
 "  </Target>\n" +
 "   \n" +
 "  <Target Name=\"{0}_PEVerify\">\n" +

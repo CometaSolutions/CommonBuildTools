@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project
+  DefaultTargets="Build"
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+  >
+  
+  <UsingTask
+    Condition="Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.GenerateNuGetBuildFileTask"
+    AssemblyFile="$(MSBuildThisFileDirectory)CommonBuildTools.dll"
+    />
+  <UsingTask
+    Condition="!Exists('$(MSBuildThisFileDirectory)CommonBuildTools.dll')"
+    TaskName="CommonBuildTools.GenerateNuGetBuildFileTask"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+    TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <PackageID ParameterType="System.String" Required="True" />
+      <BuildFileLocation ParameterType="System.String" Required="False" />
+      <NoDotReplacementInPackageID ParameterType="System.Boolean" Required="False" />
+      <PathToVSCRoot ParameterType="System.String" Required="False" />
+      <PathToNuGetPackagesManagement ParameterType="System.String" Required="False" />
+      <PathToTestsProject ParameterType="System.String" Required="False" />
+      <PathToTestsAssembly ParameterType="System.String" Required="False" />
+      <PathToOutputDirectory ParameterType="System.String" Required="False" />
+      <PathToNuSpecDirectory ParameterType="System.String" Required="False" />
+      <PathToAssemblyVersionFile ParameterType="System.String" Required="False" />
+      <PathToNuGetPackageDirectory ParameterType="System.String" Required="False" />
+      <PathToCommonBuildTools ParameterType="System.String" Required="False" />
+      <OutputAssemblyName ParameterType="System.String" Required="False" />
+      <NuGetTargetPath ParameterType="System.String" Required="False" />
+      <NuGetInceptionYear ParameterType="System.String" Required="False" />
+      <NuGetAuthors ParameterType="System.String" Required="False" />
+      <NuGetDescription ParameterType="System.String" Required="False" />
+      <NuGetTitle ParameterType="System.String" Required="False" />
+      <NuGetTags ParameterType="System.String" Required="False" />
+      <NuGetSummary ParameterType="System.String" Required="False" />
+      <NuGetProjectURL ParameterType="System.String" Required="False" />
+      <NuGetLicenseURL ParameterType="System.String" Required="False" />
+      <NuGetIconURL ParameterType="System.String" Required="False" />
+      <NuGetRequireLicenseAcceptance ParameterType="System.String" Required="False" />
+      <NuGetMinClientVersion ParameterType="System.String" Required="False" />
+    </ParameterGroup>
+    <Task>
+      <Code Source="$(MSBuildThisFileDirectory)../Source/CommonBuildTools/GenerateNuGetBuildFileTask.cs" />
+    </Task>
+  </UsingTask>
+  <Target Name="Build">
+    <CommonBuildTools.GenerateNuGetBuildFileTask
+      PackageID="$(PackageID)"
+      BuildFileLocation="$(BuildFileLocation)"
+      NoDotReplacementInPackageID="$(NoDotReplacementInPackageID)"
+      PathToVSCRoot="$(PathToVSCRoot)"
+      PathToNuGetPackagesManagement="$(PathToNuGetPackagesManagement)"
+      PathToTestsProject="$(PathToTestsProject)"
+      PathToTestsAssembly="$(PathToTestsAssembly)"
+      PathToOutputDirectory="$(PathToOutputDirectory)"
+      PathToNuSpecDirectory="$(PathToNuSpecDirectory)"
+      PathToAssemblyVersionFile="$(PathToAssemblyVersionFile)"
+      PathToNuGetPackageDirectory="$(PathToNuGetPackageDirectory)"
+      PathToCommonBuildTools="$(PathToCommonBuildTools)"
+      OutputAssemblyName="$(OutputAssemblyName)"
+      NuGetTargetDirectory="$(NuGetTargetDirectory)"
+      NuGetInceptionYear="$(NuGetInceptionYear)"
+      NuGetAuthors="$(NuGetAuthors)"
+      NuGetDescription="$(NuGetDescription)"
+      NuGetTitle="$(NuGetTitle)"
+      NuGetTags="$(NuGetTags)"
+      NuGetSummary="$(NuGetSummary)"
+      NuGetProjectURL="$(NuGetProjectURL)"
+      NuGetLicenseURL="$(NuGetLicenseURL)"
+      NuGetIconURL="$(NuGetIconURL)"
+      NuGetRequireLicenseAcceptance="$(NuGetRequireLicenseAcceptance)"
+      NuGetMinClientVersion="$(NuGetMinClientVersion)"
+      />
+  </Target>
+  
+</Project>

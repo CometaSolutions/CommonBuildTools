@@ -992,7 +992,9 @@ internal static partial class E_CBT
    {
       return element == null ?
          null :
-         new NuGetPackage( element.ListOrEmpty( "Versions", "Version" ).Select( el => el.Value ) )
+         new NuGetPackage( element.ListOrEmpty( "Versions", null )
+            .Where( el => String.Equals( "Version", el.Name ) || String.Equals( "VersionFile", el.Name ) )
+            .Select( el => String.Equals( "Version", el.Name ) ? el.Value : File.ReadAllText( el.Value.ConvertRelativeToAbsolute( ngmLocation ) ) ) )
          {
             PackageID = element.ValueOrNull( "ID" ),
             PackageSpecificConfiguration = (PackageSpecificConfiguration) element.Element( "PackageSpecificConfiguration" ).CreateNuGetConfiguration( false, ngmLocation )
@@ -1054,7 +1056,7 @@ internal static partial class E_CBT
 
       if ( container != null )
       {
-         foreach ( var item in container.Elements( listItemName ) )
+         foreach ( var item in ( String.IsNullOrEmpty( listItemName ) ? container.Elements() : container.Elements( listItemName ) ) )
          {
             yield return item;
          }

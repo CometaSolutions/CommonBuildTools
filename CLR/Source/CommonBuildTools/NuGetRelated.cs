@@ -993,8 +993,8 @@ internal static partial class E_CBT
       return element == null ?
          null :
          new NuGetPackage( element.ListOrEmpty( "Versions", null )
-            .Where( el => String.Equals( "Version", el.Name ) || String.Equals( "VersionFile", el.Name ) )
-            .Select( el => String.Equals( "Version", el.Name ) ? el.Value : File.ReadAllText( el.Value.ConvertRelativeToAbsolute( ngmLocation ) ) ) )
+            .Where( el => String.Equals( "Version", el.Name.LocalName ) || String.Equals( "VersionFile", el.Name.LocalName ) )
+            .Select( el => String.Equals( "Version", el.Name.LocalName ) ? el.Value : File.ReadAllText( el.Value.ConvertRelativeToAbsolute( ngmLocation ) ) ) )
          {
             PackageID = element.ValueOrNull( "ID" ),
             PackageSpecificConfiguration = (PackageSpecificConfiguration) element.Element( "PackageSpecificConfiguration" ).CreateNuGetConfiguration( false, ngmLocation )

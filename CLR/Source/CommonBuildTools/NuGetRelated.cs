@@ -734,9 +734,9 @@ namespace CommonBuildTools
             var now = DateTime.Now.Year;
             if ( now > inception )
             {
-               cr += "-" + now + " ";
+               cr += "-" + now;
             }
-            cr += this.Authors + ". All rights reserved.";
+            cr += " " + this.Authors + ". All rights reserved.";
          }
          return cr;
       }

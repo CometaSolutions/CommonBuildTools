@@ -86,7 +86,7 @@ namespace CommonBuildTools
 "    \n" +
 "    <!-- Verify all .dll files exist -->\n" +
 "    <PropertyGroup>\n" +
-"      <{0}PEVerifyFilesCount>@(PEVerifyFiles->Count())</{0}PEVerifyFilesCount>\n" +
+"      <{0}PEVerifyFilesCount>@({0}PEVerifyFiles->Count())</{0}PEVerifyFilesCount>\n" +
 "      <{0}PEVerifyFilesExpectedCount>1</{0}PEVerifyFilesExpectedCount>\n" +
 "    </PropertyGroup>\n" +
 "    <Error Condition=\" '$(PEVerifyFilesCount)' != '$({0}PEVerifyFilesExpectedCount)' \" Text=\"Not all required files for PEVerify are present ($({0}PEVerifyFilesCount)).\" />\n" +

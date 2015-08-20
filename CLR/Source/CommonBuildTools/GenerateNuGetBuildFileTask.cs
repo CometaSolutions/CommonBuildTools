@@ -81,19 +81,19 @@ namespace CommonBuildTools
 "    \n" +
 "    <!-- Files for PEVerify -->\n" +
 "    <ItemGroup>\n" +
-"      <PEVerifyFiles Include=\"$({0}BaseDir)/{6}/{23}.dll\" />\n" +
+"      <{0}PEVerifyFiles Include=\"$({0}BaseDir)/{6}/{23}.dll\" />\n" +
 "    </ItemGroup>\n" +
 "    \n" +
 "    <!-- Verify all .dll files exist -->\n" +
 "    <PropertyGroup>\n" +
-"      <PEVerifyFilesCount>@(PEVerifyFiles->Count())</PEVerifyFilesCount>\n" +
-"      <PEVerifyFilesExpectedCount>1</PEVerifyFilesExpectedCount>\n" +
+"      <{0}PEVerifyFilesCount>@(PEVerifyFiles->Count())</{0}PEVerifyFilesCount>\n" +
+"      <{0}PEVerifyFilesExpectedCount>1</{0}PEVerifyFilesExpectedCount>\n" +
 "    </PropertyGroup>\n" +
-"    <Error Condition=\" '$(PEVerifyFilesCount)' != '$(PEVerifyFilesExpectedCount)' \" Text=\"Not all required files for PEVerify are present ($(PEVerifyFilesCount)).\" />\n" +
+"    <Error Condition=\" '$(PEVerifyFilesCount)' != '$({0}PEVerifyFilesExpectedCount)' \" Text=\"Not all required files for PEVerify are present ($({0}PEVerifyFilesCount)).\" />\n" +
 "\n" +
 "    <!-- Call PEVerify -->\n" +
 "    <CommonBuildTools.PEVerifyTask\n" +
-"      FileToVerify=\"%(PEVerifyFiles.Identity)\"\n" +
+"      FileToVerify=\"%({0}PEVerifyFiles.Identity)\"\n" +
 "      />\n" +
 "  </Target>\n" +
 "   \n" +
@@ -146,7 +146,7 @@ namespace CommonBuildTools
 "    <!-- Push if API-key or config file property specified -->\n" +
 "    <CommonBuildTools.NuGetTaskPush\n" +
 "      Condition=\" '$({0}NuGetPushAPIKey)' != '' or '$({0}NuGetPushConfigFile)' != '' \"\n" +
-"      PackageFilePath=\"$({0}BaseDirNuGet)/{0}.$({0}NuSpecVersionGenerated).nupkg\"\n" +
+"      PackageFilePath=\"$({0}BaseDirNuGet)/{24}.$({0}NuSpecVersionGenerated).nupkg\"\n" +
 "      APIKey=\"$({0}NuGetPushAPIKey)\"\n" +
 "      Source=\"$({0}NuGetPushSource)\"\n" +
 "      ConfigFile=\"$({0}NuGetPushConfigFile)\"\n" +

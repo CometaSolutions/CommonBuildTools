@@ -28,7 +28,7 @@
       <PathToNuGetPackageDirectory ParameterType="System.String" Required="False" />
       <PathToCommonBuildTools ParameterType="System.String" Required="False" />
       <OutputAssemblyName ParameterType="System.String" Required="False" />
-      <NuGetTargetPath ParameterType="System.String" Required="False" />
+      <NuGetTargetDirectory ParameterType="System.String" Required="False" />
       <NuGetInceptionYear ParameterType="System.String" Required="False" />
       <NuGetAuthors ParameterType="System.String" Required="False" />
       <NuGetDescription ParameterType="System.String" Required="False" />

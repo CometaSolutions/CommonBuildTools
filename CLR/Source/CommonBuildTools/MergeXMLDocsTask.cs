@@ -69,7 +69,7 @@ namespace CommonBuildTools
                      }
                      else
                      {
-                        this.Log.LogWarning( "The XML fragment file {0} does not seem to contain any documentation.", fragmentFN );
+                        this.Log.LogMessage( "The XML fragment file {0} does not seem to contain any documentation.", fragmentFN );
                      }
                   }
                   else
